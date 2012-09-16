@@ -4,9 +4,9 @@ define([
   'backbone',
   'utils/parse',
   'utils/log',
-  'yaml',  
+  'yaml',
 ], function($, _, Backbone, Parse, Log){
-  
+
   // Posts Dictionary is a hash representation of all posts in the app.
   // This is used as the primary posts database for the application.
   // A post is referenced by its unique url attribute.
@@ -20,17 +20,17 @@ define([
       'May', 'June', 'July', 'August',
       'September', 'October', 'November', 'December',
     ],
-    
+
     initialize : function(attrs){
-      
+
     },
-    
+
     generate : function(){
       return this.fetch({dataType : "html", cache : false });
     },
-    
+
     url : function(){
-      return this.config.getDataPath('/_database/posts_dictionary.yml');
+      return this.config.getDataPath('/database/posts_dictionary.yml');
     },
 
     parse : function(response){
@@ -40,11 +40,11 @@ define([
       for(id in data['dictionary']){
         data['dictionary'][id]['url'] += ('?path='+ this.config.fileJoin(this.config.get('postsDirectory'), id))
       }
-      
+
       this.set(data);
       return this.attributes;
     },
-    
+
     // TODO: Need to optimize the post sorting for when post quantity gets unwieldy.
     // Sets a sorted Array containing Objects.
     buildChronology : function(){
@@ -54,7 +54,7 @@ define([
           return new Date(post.date);
         }).reverse()
       )
-      
+
       // Standardize this as a simple Array since pages operate in this way.
       // Sets a sorted Array containing Objects.
       this.set('chronological',
@@ -63,10 +63,10 @@ define([
         })
       )
     },
-    
+
     // Create a collated posts data structure.
-    // [{ 'year': year, 
-    //   'months' : [{ 'month' : month, 
+    // [{ 'year': year,
+    //   'months' : [{ 'month' : month,
     //      'posts': [{}, {}, ..] }, ..] }, ..]
     //
     collate : function(){
@@ -75,7 +75,7 @@ define([
         var thisDate = new Date(post.date);
         var thisYear = thisDate.getFullYear().toString();
         var thisMonth = this.Months[thisDate.getMonth()];
-        
+
         var prevDate, prevMonth, prevYear;
         if(posts[i-1]){
           prevDate = new Date(posts[i-1].date);
@@ -83,7 +83,7 @@ define([
           prevMonth = this.Months[prevDate.getMonth()];
         }
 
-        if(prevYear && prevYear === thisYear) 
+        if(prevYear && prevYear === thisYear)
           if(prevMonth && prevMonth === thisMonth)
             collated[collated.length-1]
               .months[collated.months.length-1]
@@ -95,9 +95,9 @@ define([
                 'posts' : new Array(post)
               }) // create new month
         else
-          collated.push({ 
+          collated.push({
             'year' : thisYear,
-            'months' : [{ 
+            'months' : [{
               'month' : thisMonth,
               'posts' : new Array(post)
             }]
@@ -107,19 +107,19 @@ define([
 
       this.set('collated', collated);
     },
-    
+
     // Create the TagsDictionary
     parseTags : function(){
       var tags = {}
-      
+
       _.each(this.get('dictionary'), function(post){
         _.each(post.tags, function(tag){
           if( tags.hasOwnProperty(tag) )
             tags[tag].count += 1;
           else
             tags[tag] = { count : 1, name : tag, posts : [] }
-            
-          tags[tag].posts.push(post.url)  
+
+          tags[tag].posts.push(post.url)
         })
       })
 

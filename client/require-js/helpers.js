@@ -21,7 +21,7 @@ define([
     console.log(data);
     return JSON.stringify(data);
   });
-  
+
   // Internal: Register analytics helper
   //  Output analytics code as defined by the configuration settings.
   //
@@ -39,11 +39,11 @@ define([
         '<br>an analytics provider must be specified at: "site.JB.analytics.provider"'
       )
     }
-    return (this.config.production) 
+    return (this.config.production)
       ? Handlebars.compile(Handlebars.partials['analytics.'+provider])(this)
       : '<p class="development-notice" style="background:lightblue">'+ provider +' Loaded!</p>';
-  });  
-  
+  });
+
   // Internal: Register comments helper
   //  Output comments code as defined by the configuration settings.
   //
@@ -62,18 +62,18 @@ define([
       )
     }
 
-    return (this.config.production) 
+    return (this.config.production)
       ? Handlebars.compile(Handlebars.partials['comments.'+provider])(this)
       : '<p class="development-notice" style="background:orange">'+ provider +' Loaded!</p>';
   });
-  
+
   // Internal: Register pages_list helper
   // Iterate through a list of pages.
   // TODO: setting any variables in the pages dictionary will alter the dictionary.
   //   Consider deep-cloning each page object.
   //   It works now because the dictionary is renewed on every preview generation.
   //
-  // context - Optional [Array] 
+  // context - Optional [Array]
   //   Pass an array of page ids (page.id)
   //   The ids are expanded into objects from the page dictionary.
   //   If there is no context, we assume the pages dictionary.
@@ -99,11 +99,11 @@ define([
       if(this.page.id.replace(/^\//,'') === page.id.replace(/^\//,'')) page.isActivePage = true;
       cache += template(page);
     }, this);
-    
+
     return new Handlebars.SafeString(cache);
   });
-  
-  // Internal: Register posts_list helper 
+
+  // Internal: Register posts_list helper
   // Iterate through a list of ordered posts.
   // Default order is reverse chronological.
   //
@@ -119,9 +119,9 @@ define([
   // Returns: [String] - The parsed block content.
   Handlebars.registerHelper('posts_list', function(context, block) {
     var template = block ? block.fn : context.fn;
-    var posts = _.map( 
-      ( _.isArray(context) ? context : this._posts.chronological ),
-      function(id){ return this._posts.dictionary[id] },
+    var posts = _.map(
+      ( _.isArray(context) ? context : this.posts.chronological ),
+      function(id){ return this.posts.dictionary[id] },
       this
     );
 
@@ -129,10 +129,10 @@ define([
     _.each(posts, function(posts){
       cache += template(posts);
     }, this);
-    
+
     return new Handlebars.SafeString(cache);
   });
-  
+
   // Internal: Register tags_list helper.
   // Iterate through a list of tags.
   //
@@ -144,21 +144,21 @@ define([
   //
   //   {{#tags_list}} ... {{/tags_list}}
   //
-  // Returns: [String] - The parsed block content.  
+  // Returns: [String] - The parsed block content.
   Handlebars.registerHelper('tags_list', function(context, block) {
     var template = block ? block.fn : context.fn;
-    var tags = _.isArray(context) 
-      ? _.map( context, function(name){ return this._posts.tags[name] }, this)
-      : this._posts.tags;
+    var tags = _.isArray(context)
+      ? _.map( context, function(name){ return this.posts.tags[name] }, this)
+      : this.posts.tags;
 
     var cache = '';
     _.each(tags, function(tag){
       cache += template(tag);
     }, this);
-    
+
     return new Handlebars.SafeString(cache);
   });
-  
+
   // Internal: Register categories_list helper.
   // Iterate through a list of categories.
   //
@@ -173,18 +173,18 @@ define([
   // Returns: [String] - The parsed block content.
   Handlebars.registerHelper('categories_list', function(context, block) {
     var template = block ? block.fn : context.fn;
-    var categories = _.isArray(context) 
-      ? _.map( context, function(name){ return this._posts.categories[name] }, this)
-      : this._posts.categories;
+    var categories = _.isArray(context)
+      ? _.map( context, function(name){ return this.posts.categories[name] }, this)
+      : this.posts.categories;
 
     var cache = '';
     _.each(categories, function(cat){
       cache += template(cat);
     }, this);
-    
+
     return new Handlebars.SafeString(cache);
   });
-  
+
   // Internal: Register posts_collate block helper
   // Collate posts by year and month descending.
   //
@@ -196,40 +196,40 @@ define([
   Handlebars.registerHelper('posts_collate', function(block) {
     var template = block.fn;
     var cache = '';
-    _.each(this._posts.collated, function(data){
+    _.each(this.posts.collated, function(data){
       cache += template(data);
     }, this);
-    
+
     return new Handlebars.SafeString(cache);
   });
-  
-  // Internal: Register next helper 
+
+  // Internal: Register next helper
   // Returns the next (newer) post relative to the calling page.
   //
   // Returns: [String] - The parsed block content.
   Handlebars.registerHelper('post_next', function(context, block) {
     var template = block ? block.fn : context.fn;
-    var position = this._posts.chronological.indexOf(this.page.id);
-    var first = _.first(this._posts.chronological);
+    var position = this.posts.chronological.indexOf(this.page.id);
+    var first = _.first(this.posts.chronological);
     var cache = (position === -1 || this.page.id === first)
       ? template.inverse({})
-      : template( this._posts.dictionary[ this._posts.chronological[position-1] ] );
+      : template( this.posts.dictionary[ this.posts.chronological[position-1] ] );
     return new Handlebars.SafeString(cache);
   });
-  
-  // Internal: Register previous helper 
+
+  // Internal: Register previous helper
   // Returns the previous (older) post relative to the calling page.
   //
   // Returns: [String] - The parsed block content.
   Handlebars.registerHelper('post_previous', function(context, block) {
     var template = block ? block.fn : context.fn;
-    var position = this._posts.chronological.indexOf(this.page.id);
-    var last = _.last(this._posts.chronological);
+    var position = this.posts.chronological.indexOf(this.page.id);
+    var last = _.last(this.posts.chronological);
     var cache = (position === -1 || this.page.id === last)
       ? template.inverse({})
-      : template( this._posts.dictionary[ this._posts.chronological[position+1] ] );
+      : template( this.posts.dictionary[ this.posts.chronological[position+1] ] );
     return new Handlebars.SafeString(cache);
   });
-  
+
   return Handlebars;
 });

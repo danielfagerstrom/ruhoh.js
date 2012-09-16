@@ -3,7 +3,7 @@ define([
   'underscore'
 ], function($, _){
 
-  return { 
+  return {
 
     // Public: Respond when a file fails to load.
     // Returns: Throws Exception.
@@ -12,7 +12,7 @@ define([
       this.render(model.url, message, "Load Error");
       throw(message + ": " + model.url);
     },
-    
+
     // Public: Respond when a file cannot be parsed
     // usually because the file is not formatted properly.
     // Returns: Throws Exception.
@@ -20,12 +20,12 @@ define([
       this.render(fileId, message, "Parse Error");
       throw(message);
     },
-    
+
     configError : function(message){
-      this.render('_config.yml', message, "Configuration Error");
+      this.render('config.yml', message, "Configuration Error");
       throw(message);
     },
-    
+
     // Public: Render a user friendly message into the DOM.
     // Returns: Nothing.
     render : function(fileId, message, type){

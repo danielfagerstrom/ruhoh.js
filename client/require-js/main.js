@@ -1,5 +1,5 @@
 require.config({
-  baseUrl : "/_client/require-js/",
+  baseUrl : "/client/require-js/",
   urlArgs: "bust=" + (new Date()).getTime(),
   paths : {
     'jquery' : 'libs/jquery-1.7.1',
@@ -10,7 +10,7 @@ require.config({
     'handlebars' : 'libs/handlebars',
     'mustache' : 'libs/mustache',
     'markdown' : 'libs/markdown/Markdown.Converter'
-  }  
+  }
 });
 
 require(['app'], function(App){

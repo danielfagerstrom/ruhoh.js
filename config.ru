@@ -1,5 +1,5 @@
 require 'rack'
-#require './_lib/ruhoh'
+#require './lib/ruhoh'
 #Ruhoh.setup
 #Ruhoh::Posts.generate
 #Ruhoh::Pages.generate
@@ -9,7 +9,7 @@ use Rack::Lint
 use Rack::ShowExceptions
 use Rack::Static, {
   :root => '.',
-  :urls => ['/_client', '/_database', '/_config.yml', '/_pages', '/_posts', '/_themes']
+  :urls => ['/client', '/database', '/config.yml', '/pages', '/posts', '/themes']
 }
 
 run Proc.new { |env|

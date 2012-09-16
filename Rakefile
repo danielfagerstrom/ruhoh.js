@@ -1,8 +1,8 @@
 require 'rubygems'
 require 'rake'
 require 'fileutils'
-require './_lib/ruhoh'
+require './lib/ruhoh'
 
 Ruhoh.setup
 
-Dir['./_lib/rake/*.rake'].each { |r| load r }
+Dir['./lib/rake/*.rake'].each { |r| load r }

@@ -28,12 +28,12 @@ module Ruhoh
   #
   def self.setup
     base_directory = Dir.getwd
-    site_config = YAML.load_file('_config.yml')
+    site_config = YAML.load_file('config.yml')
     
     c = Config.new
     c.site_source_path = base_directory
-    c.database_folder = '_database'
-    c.posts_path = File.join(c.site_source_path, '_posts')
+    c.database_folder = 'database'
+    c.posts_path = File.join(c.site_source_path, 'posts')
     c.posts_data_path = File.join(c.site_source_path, c.database_folder, 'posts_dictionary.yml')
     c.pages_data_path = File.join(c.site_source_path, c.database_folder, 'pages_dictionary.yml')
     c.permalink = site_config['permalink'] || :date # default is date in jekyll
@@ -42,7 +42,7 @@ module Ruhoh
   end
 
   def self.partials
-    partials_path = './_client/partials'
+    partials_path = './client/partials'
     partials_manifest = JSON.parse(File.open("#{partials_path}/manifest.json").read)
     partials = {}
     FileUtils.cd(partials_path) {
@@ -86,11 +86,11 @@ module Ruhoh
     def to_tags(sub_context)
       if sub_context.is_a?(Array)
         sub_context.map { |id|
-          self.context['_posts']['tags'][id] if self.context['_posts']['tags'][id]
+          self.context['posts']['tags'][id] if self.context['posts']['tags'][id]
         }
       else
         tags = []
-        self.context['_posts']['tags'].each_value { |tag|
+        self.context['posts']['tags'].each_value { |tag|
           tags << tag
         }
         tags
@@ -98,10 +98,10 @@ module Ruhoh
     end
     
     def to_posts(sub_context)
-      sub_context = sub_context.is_a?(Array) ? sub_context : self.context['_posts']['chronological']
+      sub_context = sub_context.is_a?(Array) ? sub_context : self.context['posts']['chronological']
       
       sub_context.map { |id|
-        self.context['_posts']['dictionary'][id] if self.context['_posts']['dictionary'][id]
+        self.context['posts']['dictionary'][id] if self.context['posts']['dictionary'][id]
       }
     end
     
@@ -128,12 +128,12 @@ module Ruhoh
     def self.test
       sub = nil
       master = nil
-      theme_path = File.join(Ruhoh.config.site_source_path, '_themes', Ruhoh.config.theme)
+      theme_path = File.join(Ruhoh.config.site_source_path, 'themes', Ruhoh.config.theme)
 
       pages = YAML.load_file(Ruhoh.config.pages_data_path)
       posts = YAML.load_file(Ruhoh.config.posts_data_path)
-      config = YAML.load_file( File.join(Ruhoh.config.site_source_path, '_config.yml') )
-      asset_path = File.join('/_themes', Ruhoh.config.theme )
+      config = YAML.load_file( File.join(Ruhoh.config.site_source_path, 'config.yml') )
+      asset_path = File.join('/themes', Ruhoh.config.theme )
       
       page = pages['about.md']
       content = File.open(File.join( Ruhoh.config.site_source_path, page['id']) ).read
@@ -151,7 +151,7 @@ module Ruhoh
         "config" => config,
         "page" => page,
         "pages" => pages,
-        "_posts" => posts,
+        "posts" => posts,
         "ASSET_PATH" => asset_path,
       }
 
@@ -389,7 +389,7 @@ module Ruhoh
       invalid_pages = []
       dictionary = {}
       total_pages = 0
-      FileUtils.cd(File.join(Ruhoh.config.site_source_path, "_pages")) {
+      FileUtils.cd(File.join(Ruhoh.config.site_source_path, "pages")) {
         Dir.glob("**/*.*") { |filename| 
           next if FileTest.directory?(filename)
           next if ['_', '.'].include? filename[0]
@@ -452,7 +452,7 @@ module Ruhoh
       puts "=> Start watching: #{Ruhoh.config.site_source_path}"
       glob = ''
       
-      # Watch all files + all sub directories except for special folders e.g '_database'
+      # Watch all files + all sub directories except for special folders e.g 'database'
       Dir.chdir(Ruhoh.config.site_source_path) {
         dirs = Dir['*'].select { |x| File.directory?(x) }
         dirs -= [Ruhoh.config.database_folder]
@@ -470,7 +470,7 @@ module Ruhoh
         args.each {|event|
           path = event['path'].gsub(Ruhoh.config.site_source_path, '')
 
-          if path =~ /^\/?_posts/
+          if path =~ /^\/?posts/
             Ruhoh::Posts::generate
           else
             Ruhoh::Pages::generate

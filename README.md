@@ -11,7 +11,7 @@ The client allows you to preview a ruhoh compatible blog in your web-browser.
 It's made with backbone.js, require.js, mustache.js and jQuery.
 
 There is no File I/O so the client cannot pragmatically scan your blog directory for files.
-Currently it merely reads from pre-generated dictionary files contained in the `_database` folder.
+Currently it merely reads from pre-generated dictionary files contained in the `database` folder.
 
 ## Requirements
 

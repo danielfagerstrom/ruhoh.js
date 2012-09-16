@@ -9,17 +9,17 @@ define([
   'yaml',
 ], function($, _, Backbone, Layout, Config, Parse, Log){
 
-  // Page Model 
+  // Page Model
   // Represents a post or page.
   return Backbone.Model.extend({
 
     initialize : function(attrs){
 
      this.bind('change:path', function(){
-       this.set('id', this.get('path').replace(/^_posts\//, '') )
+       this.set('id', this.get('path').replace(/^posts\//, '') )
      },this)
     },
-    
+
     // Public: Fetch a page/post and resolve all template dependencies.
     // Template promises are *piped* up to the parent page promise.
     // TODO: This probably can be implemented a lot better.
@@ -29,9 +29,9 @@ define([
       var that = this;
 
       return this.fetch({dataType : "html", cache : false}).pipe(function(){
-        if(!that.get("layout")) 
+        if(!that.get("layout"))
           Log.parseError(that.url(), "Page/Post requires a valid layout setting. (e.g. layout: post)")
-        
+
         that.sub.set("id", that.get("layout"));
         return that.sub.generate().pipe(function(){
           if(that.sub.get("layout")){
@@ -43,13 +43,13 @@ define([
         Log.loadError(this, jqxhr)
       })
     },
-    
+
     url : function(){
       return this.config.getDataPath(this.get('path'));
     },
 
     // Parse the raw page/post file.
-    parse : function(data){ 
+    parse : function(data){
       this.set(Parse.frontMatter(data, this.url()), { silent : true});
       this.set("content", Parse.content(data, this.id), { silent : true});
       return this.attributes;

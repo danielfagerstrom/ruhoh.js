@@ -43,7 +43,7 @@ tagline : The sample kit homepage
 
 ### JB/posts_collate
 
-{{# _posts.collated }}
+{{# posts.collated }}
 <h2>{{year}}</h2>
 {{#months}}
   <h3>{{month}}</h3>
@@ -53,7 +53,7 @@ tagline : The sample kit homepage
     {{/ posts }}
   </ul>
 {{/months}}
-{{/ _posts.collated }}
+{{/ posts.collated }}
 
     {% assign posts_collate = site.posts %}
     {% include JB/posts_collate %}
