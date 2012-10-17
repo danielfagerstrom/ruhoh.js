@@ -42,7 +42,7 @@ define([
 
       $.get('/').pipe(function(a,b,jqxhr){
         //that.config = new Config({'site_source' : '/' + jqxhr.getResponseHeader('x-ruhoh-site-source-folder') });
-        that.config = new Config({'site_source' : '/' });
+        that.config = new Config({'site_source' : '/_src/' });
         return that.config.generate();
       }).done(function(){
 
