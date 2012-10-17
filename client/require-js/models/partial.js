@@ -14,7 +14,7 @@ define([
     },
 
     url : function(){
-      return this.config.getPath('/partials/', this.get('path'));
+      return this.config.getDataPath('/partials/' + this.get('path'));
     },
 
     parse : function(data){
