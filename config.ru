@@ -9,7 +9,7 @@ use Rack::Lint
 use Rack::ShowExceptions
 use Rack::Static, {
   :root => '.',
-  :urls => ['/client', '/database', '/config.yml', '/pages', '/posts', '/themes']
+  :urls => ['/client', '/database', '/config.yml', '/pages', '/posts', '/themes', '/partials']
 }
 
 run Proc.new { |env|
