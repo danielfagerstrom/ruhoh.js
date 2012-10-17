@@ -9,7 +9,9 @@ require.config({
     'yaml' : 'libs/js-yaml',
     'handlebars' : 'libs/handlebars',
     'mustache' : 'libs/mustache',
-    'markdown' : 'libs/markdown/Markdown.Converter'
+    'markdown' : 'libs/markdown/Markdown.Converter',
+    'cs': 'libs/cs',
+    'coffee-script': 'libs/coffee-script'
   }
 });
 
