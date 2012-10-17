@@ -15,6 +15,6 @@ require.config({
   }
 });
 
-require(['app'], function(App){
+require(['cs!app'], function(App){
   App.start();
 });

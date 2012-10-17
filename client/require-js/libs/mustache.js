@@ -1,9 +1,9 @@
 /*
 Shameless port of a shameless port ^ 2
 @defunkt => @janl => @aq => @voodootikigod => @timruffles
- 
+
 */
-define(['ruhoh_helper'],function(RuhohHelper){
+define(['cs!ruhoh_helper'],function(RuhohHelper){
 
 /*!
  * mustache.js - Logic-less {{mustache}} templates with JavaScript
@@ -182,8 +182,8 @@ var Mustache = (typeof module !== "undefined" && module.exports) || {};
         ? lookup(RuhohHelper.parseContext(name), stack)
         : null;
       value = RuhohHelper.query(name, context, stack[0]);
-    } 
-    
+    }
+
     if (inverted) {
       // From the spec: inverted sections may render text once based on the
       // inverse value of the key. That is, they will be rendered if the key
