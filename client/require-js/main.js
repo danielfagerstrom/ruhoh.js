@@ -1,6 +1,6 @@
 require.config({
   baseUrl : "/client/require-js/",
-  urlArgs: "bust=" + (new Date()).getTime(),
+  //urlArgs: "bust=" + (new Date()).getTime(),
   paths : {
     'jquery' : 'libs/jquery-1.7.1',
     'underscore': 'libs/underscore-1.3.1-amd', // AMD support

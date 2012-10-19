@@ -10,28 +10,56 @@ define [
     initialize: (attrs) ->
       @set
         time: new Date().toString()
-        basePath: (attrs.basePath or "/")
+        basePath: (attrs?.basePath or "/")
         postsDirectory: "posts"
         pagesDirectory: "pages"
       @buildBasePath()
       @bind "change:basePath", @buildBasePath, this
 
     generate: ->
-      @fetch
-        dataType: "html"
-        cache: false
+      @fetch dataType: "html", cache: false
 
     url: ->
-      "/" + @fileJoin(@get("site_source"), "/config.yml")
+      "/" + @fileJoin(@Ruhoh.base,  @Ruhoh.names.config_data)
 
     parse: (response) ->
-      @set jsyaml.load(response)
-      @validateConfig()
+      site_config = jsyaml.load(response)
+      @validateConfig(site_config)
+      @set @setDefaults(site_config)
       @attributes
+
+    setDefaults: (site_config) ->
+      theme = if site_config.theme then site_config.theme.replace(/\s/, '') else ''
+      
+      config = {}
+      config.theme = theme
+
+      config.production_url = site_config.production_url
+      
+      config.env = site_config.env || null
+
+      config.base_path = '/'
+      if site_config.base_path
+        config.base_path = site_config.base_path
+        config.base_path += "/" unless config.base_path[config.base_path.length - 1] == '/'
+      
+      config.rss_limit = site_config.rss?.limit ? 20
+
+      config.posts_permalink = site_config.posts?.permalink ? "/:categories/:year/:month/:day/:title.html"
+      config.posts_layout = site_config.posts?.layout ? 'post'
+      excluded_posts = site_config.posts?.exclude ? []
+      config.posts_exclude = (new Regexp node for node in excluded_posts)
+      
+      config.pages_permalink = site_config.pages?.permalink
+      config.pages_layout = site_config.pages?.layout ? 'page'
+      excluded_pages = site_config.pages?.exclude ? []
+      config.pages_exclude = (new Regexp node for node in excluded_pages)
+      
+      config
     
     # Ensure we have the required configuration settings.
-    validateConfig: ->
-      Log.configError "theme is not set. <br> ex: theme : my-theme"  unless _.isString(@get("theme"))
+    validateConfig: (site_config) ->
+      Log.configError "theme is not set. <br> ex: theme : my-theme"  unless _.isString(site_config.theme)
 
     # Internal: Get a normalized, absolute path for the App Session.
     # Normalizes submitted paths into a well-formed url.
@@ -55,10 +83,10 @@ define [
     # path - (Optional) String of a path to an asset.
     # Returns: String - Normalized absolute URL paath to theme assets.
     getThemePath: (path) ->
-      @getPath @get("site_source"), "themes", @get("theme"), path
+      @getPath @Ruhoh.base, "themes", @get("theme"), path
 
     getDataPath: (path) ->
-      @getPath @get("site_source"), path
+      @getPath @Ruhoh.base, path
     
     # Internal: Normalizes a root domain into a well-formed URL.
     #

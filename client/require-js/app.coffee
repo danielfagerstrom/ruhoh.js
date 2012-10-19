@@ -7,10 +7,11 @@ define [
   "cs!utils/log"
   "yaml"
 
+  "cs!ruhoh"
+
   "cs!dictionaries/pages"
   "cs!dictionaries/posts"
   
-  "cs!models/config"
   "cs!models/layout"
   "cs!models/page"
   "cs!models/payload"
@@ -23,10 +24,15 @@ define [
   "cs!helpers"
   "markdown"
 ], ($, _, Backbone, Router, Parse, Log, yaml,
+  Ruhoh,
   PagesDictionary, PostsDictionary,
-  Config, Layout, Page, Payload, Preview, Partial,
+  Layout, Page, Payload, Preview, Partial,
   Partials,
   Handlebars, helpers, Markdown) ->
+
+  opts =
+    env: 'development'
+    enable_plugins: false
     
   App =
     router: new Router
@@ -41,10 +47,16 @@ define [
       
       #that.config = new Config({'site_source' : '/' + jqxhr.getResponseHeader('x-ruhoh-site-source-folder') });
       $.get("/").pipe((a, b, jqxhr) ->
-        that.config = new Config(site_source: "/_src/")
-        that.config.generate()
+        that.ruhoh = Ruhoh
+        Ruhoh.setup(source: "/_src/")
       ).done(->
-        that.preview = that.router.preview = new Preview(null, that.config)
+        Ruhoh.config.env = opts.env
+        Ruhoh.setup_paths()
+        Ruhoh.setup_urls()
+        Ruhoh.setup_plugins() if opts.enable_plugins
+        
+        that.config = Ruhoh.config
+        that.preview = that.router.preview = new Preview(null, Ruhoh.config)
         that.router.start()
       ).fail (jqxhr) ->
         Log.loadError this, jqxhr
