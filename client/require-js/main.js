@@ -15,6 +15,8 @@ require.config({
   }
 });
 
+this.Ruhoh = {};
+
 require(['cs!app'], function(App){
   App.start();
 });

@@ -4,6 +4,8 @@ define [
   "backbone"
   "cs!utils/log"
 ], ($, _, Backbone, Log) ->
+
+  Ruhoh = @Ruhoh
   
   # Config Model
   Backbone.Model.extend
@@ -20,7 +22,7 @@ define [
       @fetch dataType: "html", cache: false
 
     url: ->
-      "/" + @fileJoin(@Ruhoh.base,  @Ruhoh.names.config_data)
+      "/" + @fileJoin(Ruhoh.base,  Ruhoh.names.config_data)
 
     parse: (response) ->
       site_config = jsyaml.load(response)
@@ -83,10 +85,10 @@ define [
     # path - (Optional) String of a path to an asset.
     # Returns: String - Normalized absolute URL paath to theme assets.
     getThemePath: (path) ->
-      @getPath @Ruhoh.base, "themes", @get("theme"), path
+      @getPath Ruhoh.base, "themes", @get("theme"), path
 
     getDataPath: (path) ->
-      @getPath @Ruhoh.base, path
+      @getPath Ruhoh.base, path
     
     # Internal: Normalizes a root domain into a well-formed URL.
     #

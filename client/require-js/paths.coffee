@@ -3,6 +3,8 @@ define [
   "cs!utils/log"
 ], (_, Log) ->
 
+  Ruhoh = @Ruhoh
+
   # Like ruby B)
   fileJoin = (args...) ->
     return ""  if args.length is 0
@@ -14,7 +16,6 @@ define [
     return false
     
   generate: ->
-    Ruhoh = @Ruhoh
     paths                     = {}
     paths.base                = Ruhoh.base
     paths.config_data         = fileJoin(Ruhoh.base, Ruhoh.names.config_data)
