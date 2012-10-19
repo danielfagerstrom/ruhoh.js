@@ -1,34 +1,11 @@
 define [
   "jquery"
-  "underscore"
-  "backbone"
   "cs!router"
-  "cs!utils/parse"
   "cs!utils/log"
-  "yaml"
-
   "cs!ruhoh"
-
-  "cs!dictionaries/pages"
-  "cs!dictionaries/posts"
-  
-  "cs!models/layout"
-  "cs!models/page"
-  "cs!models/payload"
+  "cs!db"
   "cs!models/preview"
-  "cs!models/partial"
-  
-  "cs!collections/partials"
-  
-  "handlebars"
-  "cs!helpers"
-  "markdown"
-], ($, _, Backbone, Router, Parse, Log, yaml,
-  Ruhoh,
-  PagesDictionary, PostsDictionary,
-  Layout, Page, Payload, Preview, Partial,
-  Partials,
-  Handlebars, helpers, Markdown) ->
+], ($, Router, Log, Ruhoh, DB, Preview) ->
 
   opts =
     env: 'development'
@@ -49,12 +26,14 @@ define [
       $.get("/").pipe((a, b, jqxhr) ->
         that.ruhoh = Ruhoh
         Ruhoh.setup(source: "/_src/")
-      ).done(->
+      ).pipe(->
         Ruhoh.config.env = opts.env
         Ruhoh.setup_paths()
         Ruhoh.setup_urls()
         Ruhoh.setup_plugins() if opts.enable_plugins
-        
+        Ruhoh.DB = DB
+        DB.update_all()
+      ).done(->
         that.config = Ruhoh.config
         that.preview = that.router.preview = new Preview(null, Ruhoh.config)
         that.router.start()
