@@ -1,13 +1,16 @@
 define [
   "jquery"
   "cs!models/site"
-], ($, Site) ->
+  "cs!dictionaries/posts"
+], ($, Site, Posts) ->
 
   Ruhoh = @Ruhoh
 
   update_all: ->
     $.when(
       Site.generate()
-    ).pipe((site) =>
+      (new Posts).generate2()
+    ).pipe((site, posts) =>
       @site = site
+      @posts = posts
     )
