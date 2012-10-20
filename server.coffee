@@ -8,7 +8,8 @@ program
   .parse(process.argv)
   
 listFiles = (pattern, next) ->
-  glob pattern, {cwd: __dirname, root: __dirname, nomount: true}, (err, files) ->
+  opts = {cwd: __dirname, root: __dirname, nomount: true, mark: true}
+  glob pattern, opts, (err, files) ->
     next err, files
     
 app = express()
