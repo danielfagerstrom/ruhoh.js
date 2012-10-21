@@ -2,7 +2,8 @@ define [
   "jquery"
   "cs!models/site"
   "cs!dictionaries/posts"
-], ($, Site, Posts) ->
+  "cs!dictionaries/pages"
+], ($, Site, Posts, Pages) ->
 
   Ruhoh = @Ruhoh
 
@@ -10,7 +11,9 @@ define [
     $.when(
       Site.generate()
       (new Posts).generate2()
-    ).pipe((site, posts) =>
+      (new Pages).generate2()
+    ).pipe((site, posts, pages) =>
       @site = site
       @posts = posts
+      @pages = pages
     )
