@@ -30,10 +30,10 @@ define [
         {
           dictionary:      results['posts'],
           drafts:          results['drafts'],
-          # chronological:   @build_chronology(ordered_posts),
-          # collated:        @collate(ordered_posts),
-          # tags:            @parse_tags(ordered_posts),
-          # categories:      @parse_categories(ordered_posts)
+          chronological:   @build_chronology(ordered_posts),
+          collated:        @collate2(ordered_posts),
+          tags:            @parse_tags(ordered_posts),
+          categories:      @parse_categories(ordered_posts)
         }
       )
 
@@ -110,8 +110,9 @@ define [
       true
 
     ordered_posts: (dictionary) ->
-      _.sortBy (val for key, val of dictionary), (data) =>
+      _.sortBy((val for key, val of dictionary), (data) =>
         @parse_date(data.date)
+      ).reverse()
       
     parse_page_filename: (filename) ->
       data = filename.match(DateMatcher)
@@ -168,7 +169,50 @@ define [
         url = (encodeURIComponent(p) for p in format.replace(/^\//, '').split('/')).join('/')
 
       Urls.to_url(url)
-    
+
+    build_chronology: (ordered_posts) ->
+      (post.id for post in ordered_posts)
+
+    collate2: (ordered_posts) ->
+      collated = []
+      for {id, date} in ordered_posts
+        thisYear = @parse_date(date).format('YYYY')
+        thisMonth = @parse_date(date).format('MMMM')
+        if thisYear isnt prevYear
+          collated.push year: thisYear, months: months = []
+          prevYear = thisYear
+        if thisMonth isnt prevMonth
+          months.push month: thisMonth, posts: posts = []
+          prevMonth = thisMonth
+        posts.push id
+      collated
+
+    parse_tags: (ordered_posts) ->
+      parsedTags = {}
+      for {id, tags} in ordered_posts
+        for tag in tags
+          unless parsedTags[tag]
+            parsedTags[tag] =
+              count: 0
+              name: tag
+              posts: []
+          parsedTags[tag].count += 1
+          parsedTags[tag].posts.push id
+      parsedTags
+
+    parse_categories: (ordered_posts) ->
+      parsedCategories = {}
+      for {id, categories} in ordered_posts
+        for cat in categories ? []
+          unless parsedCategories[cat]
+            parsedCategories[cat] =
+              count: 0
+              name: cat
+              posts: []
+          parsedCategories[cat].count += 0
+          parsedCategories[cat].posts.push id
+      parsedCategories
+      
     # stupid javascript Dates.
     Months: ["January", "February", "March", "April",
       "May", "June", "July", "August",
