@@ -1,0 +1,26 @@
+{
+  "name": "ruhoh.js",
+  "version": "0.0.0",
+  "description": "Ruhoh universal static blog api in javascript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "",
+  "keywords": [
+    "static",
+    "blog",
+    "generator"
+  ],
+  "author": "Daniel Fagerstrom",
+  "license": "MIT",
+  "dependencies": {
+    "colors": "~0.6.0-1",
+    "glob": "~3.1.20",
+    "q": "~0.8.12",
+    "q-io": "~1.5.2",
+    "js-yaml": "~2.0.1",
+    "underscore": "~1.4.4",
+    "coffee-script": "~1.4.0"
+  }
+}
