@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html  lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Jasmine Spec Runner</title>
+  <!-- Jasmine lib / testing includes -->
+  <link rel="shortcut icon" type="image/png" href="spec/vendor/jasmine-1.2.0/jasmine_favicon.png">
+  <link rel="stylesheet" type="text/css" href="spec/vendor/jasmine-1.2.0/jasmine.css">
+  <script type="text/javascript" src="spec/vendor/jasmine-1.2.0/jasmine.js"></script>
+  <script type="text/javascript" src="spec/vendor/jasmine-1.2.0/jasmine-html.js"></script>
+
+  <!-- global lib includes -->
+  <script src="/client/require-js/require.js"></script>
+
+  <script type="text/javascript">
+    require.config({
+      baseUrl : "/client/require-js/",
+      urlArgs: "bust=" + (new Date()).getTime(),
+      paths : {
+        'jquery' : 'libs/jquery-1.7.1',
+        'underscore': 'libs/underscore-1.3.1-amd', // AMD support
+        'backbone': 'libs/backbone-0.9.1-amd', // AMD support
+        'store': 'libs/backbone-localstorage', // AMD support
+        'yaml' : 'libs/js-yaml',
+        'handlebars' : 'libs/handlebars',
+        'mustache' : 'libs/mustache',
+        'markdown' : 'libs/markdown/Markdown.Converter',
+        'cs': 'libs/cs',
+        'coffee-script': 'libs/coffee-script',
+        'spec': '/spec'
+      }
+    });
+
+    require([
+      # add specs
+    ],
+    function() {
+      var jasmineEnv = jasmine.getEnv();
+      jasmineEnv.updateInterval = 1000;
+
+      var htmlReporter = new jasmine.HtmlReporter();
+
+      jasmineEnv.addReporter(htmlReporter);
+
+      jasmineEnv.specFilter = function(spec) {
+        return htmlReporter.specFilter(spec);
+      };
+
+      jasmineEnv.execute();
+    });
+  </script>
+
+</head>
+
+<body>
+</body>
+</html>
