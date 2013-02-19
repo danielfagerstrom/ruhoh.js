@@ -3,7 +3,8 @@ define [
   "cs!models/site"
   "cs!dictionaries/posts"
   "cs!dictionaries/pages"
-], ($, Site, Posts, Pages) ->
+  "cs!parsers/routes"
+], ($, Site, Posts, Pages, Routes) ->
 
   Ruhoh = @Ruhoh
 
@@ -16,4 +17,5 @@ define [
       @site = site
       @posts = posts
       @pages = pages
+      @routes = Routes.generate()
     )
