@@ -21,6 +21,7 @@
     "q-io": "~1.5.2",
     "js-yaml": "~2.0.1",
     "underscore": "~1.4.4",
-    "coffee-script": "~1.4.0"
+    "coffee-script": "~1.4.0",
+    "moment": "~2.0.0"
   }
 }
