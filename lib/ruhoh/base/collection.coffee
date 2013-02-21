@@ -32,7 +32,8 @@ class Collection
   hasPaths: ->
     Q.all(
       for path_ in (h.path for h in @paths())
-        FS.isDirectory path.join(path_, @namespace())
+        do (path_) =>
+          FS.isDirectory path.join(path_, @namespace())
     ).then (hasDirectories) ->
       _.some hasDirectories
 
@@ -61,7 +62,7 @@ class Collection
         for pointer in files
           do (pointer) =>
             pointer["resource"] = @resource_name
-            if @ruhoh.resources.hasModel(@resource_name)
+            if @ruhoh.resources.has_model(@resource_name)
               model = new (@ruhoh.resources.model(@resource_name))(@ruhoh, pointer)
               model.generate()
             else
