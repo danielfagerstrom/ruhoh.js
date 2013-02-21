@@ -1,5 +1,6 @@
 path = require 'path'
 Q = require 'q'
+FS = require 'q-io/fs'
 glob = require 'glob'
 logger = require './ruhoh/logger'
 utils = require './ruhoh/utils'
@@ -7,7 +8,7 @@ friend = require './ruhoh/friend'
 ResourcesInterface = require './ruhoh/resources_interface'
 DB = require './ruhoh/db'
 
-Root = path.join __dirname, '..'
+Root = FS.absolute FS.join(__dirname, '..')
 class Ruhoh
   @log = logger
   @root = Root
@@ -25,7 +26,7 @@ class Ruhoh
   setup: (opts={}) ->
     @reset()
     # @constructor.log.log_file = opts.log_file if opts.log_file #todo
-    @base = opts.source if opts.source
+    @base = FS.absolute opts.source if opts.source
     @_load_config().then (config) -> !!config
   
   reset: ->
@@ -39,7 +40,7 @@ class Ruhoh
       unless config['base_path']
         config['base_path'] = '/'
       else
-        config['base_path'] += "/" unless config['base_path'][config['base_path'].length-1] == '/'
+        config['base_path'] = config['base_path'] + "/" unless config['base_path'][config['base_path'].length-1] == '/'
       
       @_config = config
   
@@ -130,6 +131,7 @@ class Ruhoh
   #    end
   #  end
 
+  # FIXME
   compile: ->
     throw new Error 'not implemented'
     @ensure_paths()
