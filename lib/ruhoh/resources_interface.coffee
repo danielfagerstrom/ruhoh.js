@@ -1,6 +1,7 @@
 Q = require 'q'
 glob = require 'glob'
 _ = require 'underscore'
+base = require './base'
 resources = require './resources'
 friend = require './friend'
 
@@ -31,13 +32,7 @@ class ResourcesInterface
     a
 
   base: ->
-    ['assets', 'pages']
-    # FIXME: more generic in ruhoh.rb
-    # Ruhoh::Base.constants.select{ |a|
-    #   Ruhoh::Base.const_get(a).class == Module
-    # }.map{ |a| 
-    #   a.to_s.downcase
-    # }
+    (a for a, m of base when _.isObject(m) and not _.isFunction(m))
 
   registered: ->
     (key for key of resources)
@@ -85,18 +80,18 @@ class ResourcesInterface
     if @[var_]
       @[var_]
     else
-      instance = if class_name == "collection"
+      if class_name == "collection"
         i = new (@collection(resource))(@ruhoh)
         i.resource_name = resource
-        i
+        instance = i
       else if class_name in ["collection_view", "watcher", "compiler"]
         collection = @_load_class_instance_for("collection", resource)
-        new (@[class_name](resource))(collection)
+        instance = new (@[class_name](resource))(collection)
       else if class_name == "client"
         collection = @_load_class_instance_for("collection", resource)
-        new (@[class_name](resource))(collection, opts)
+        instance = new (@[class_name](resource))(collection, opts)
       else
-        new (@[class_name](resource))(@ruhoh)
+        instance = new (@[class_name](resource))(@ruhoh)
 
       @[var_] = instance
 
@@ -108,8 +103,7 @@ class ResourcesInterface
       if type in @registered()
         resources[type]
       else if type in @base()
-        throw new Error "Not implemented" # FIXME
-        # Ruhoh::Base.const_get(camelize(type))
+        base[type]
       else
         klass = @_camelize(type)
         friend.say "#{resource} resource set to use:'#{type}' in config.yml but Ruhoh::Resources::#{klass} does not exist.".red
@@ -118,8 +112,7 @@ class ResourcesInterface
       if resource in @registered()
         resources[resource]
       else
-        throw new Error "Not implemented" # FIXME
-        # Ruhoh::Base.const_get(:Pages)
+        base.pages
 
   _camelize: (name) ->
     @constructor._camelize name
