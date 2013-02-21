@@ -86,3 +86,7 @@ module.exports =
   # see http://stackoverflow.com/a/3561711
   escapeRegExp: (str) ->
     str.replace /[-\/\\^$*+?.()|[\]{}]/g, '\\$&'
+
+  chomp: (string, separator=/(\n|\r)+$/) ->
+    separator = new RegExp(@escapeRegExp(separator) + "$") unless _.isRegExp separator
+    string.replace separator, ''
