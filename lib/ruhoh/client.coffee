@@ -49,8 +49,9 @@ class Client
   console: ->
     console_methods.env = @args[1]
     _.extend root, console_methods # make console_methods available as globals
-    # see http://stackoverflow.com/a/12813186
-    require 'coffee-script/lib/coffee-script/repl'
+    root.init().then =>
+      # see http://stackoverflow.com/a/12813186
+      require 'coffee-script/lib/coffee-script/repl'
       
 
 module.exports = Client
