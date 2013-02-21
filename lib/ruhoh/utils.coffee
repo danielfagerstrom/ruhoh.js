@@ -10,7 +10,7 @@ Function::property = (prop, desc) ->
   Object.defineProperty @prototype, prop, desc
 
 module.exports =
-  FMregex: /^(---\s*\n.*?\n?)^(---\s*$\n?)/m
+  FMregex: /^(---\s*\n[^]*?\n?)^(---\s*$\n?)/m
   
   parse_yaml_file: (args...) ->
     filepath = path.join args...
@@ -73,13 +73,16 @@ module.exports =
     replace("-", "_").
     toLowerCase()
 
-###
-# Seem to be Ruby namespace specific
-# 
+  ###
+  # Seem to be Ruby namespace specific
+  # 
   constantize: (class_name) ->
     unless /\A(?:::)?([A-Z]\w*(?:::[A-Z]\w*)*)\z/ =~ class_name
       raise NameError, "#{class_name.inspect} is not a valid constant name!"
 
     Object.module_eval("::#{$1}", __FILE__, __LINE__)
-###
-  
+  ###
+
+  # see http://stackoverflow.com/a/3561711
+  escapeRegExp: (str) ->
+    str.replace /[-\/\\^$*+?.()|[\]{}]/g, '\\$&'
