@@ -1,2 +1,11 @@
 module.exports =
+  dash: require './dash'
   data: require './data'
+  javascripts: require './javascripts'
+  layouts: require './layouts'
+  media: require './media'
+  partials: require './partials'
+  scaffolds: require './scaffolds'
+  stylesheets: require './stylesheets'
+  theme: require './theme'
+  widgets: require './widgets'
