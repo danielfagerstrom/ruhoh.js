@@ -4,10 +4,10 @@ Q = require 'q'
 # Public: Database class for interacting with "data" in Ruhoh.
 class DB
   constructor: (@ruhoh) ->
-    @content = {}
-    @config = {}
-    @urls = {}
-    @paths = {}
+    @_content = {}
+    @_config = {}
+    @_urls = {}
+    @_paths = {}
     @routes = {}
 
   setup: ->
@@ -22,9 +22,11 @@ class DB
     delete @routes[route]
 
   routes_initialize: ->
-    for r in @ruhoh.resources.acting_as_pages()
-      @[r]()
-    @routes
+    Q.all(
+      for r in @ruhoh.resources.acting_as_pages()
+        @[r]()
+    ).then =>
+      @routes
 
   # Get a data endpoint from pointer
   # Note this differs from update in that
@@ -33,8 +35,9 @@ class DB
     name = pointer['resource'].toLowerCase()
     id = pointer['id']
     throw new Error "Invalid data type #{name}" unless @[name]
-    data = @[name][id]
-    if data then Q.resolve(data) else @update(pointer)
+    @[name]().then (list) =>
+      data = list[id]
+      if data then Q.resolve(data) else @update(pointer)
   
   # Update a data endpoint
   #
@@ -54,7 +57,7 @@ class DB
         else
           resource = @ruhoh.resources.load_collection(name)
           resource.generate(id).then (values) =>
-            data = values[0]
+            data = values[id]
             endpoint = @["_#{name}"] || {}
             endpoint[id] = data
             data
@@ -70,30 +73,30 @@ class DB
   # return a given resource's file content
   content: (pointer) ->
     name = pointer['resource'].toLowerCase() # name is a stringified constant.
-    if @ruhoh.env == "production" && @content["#{name}_#{pointer['id']}"]
-      Q.resolve @content["#{name}_#{pointer['id']}"]
+    if @ruhoh.env == "production" && @_content["#{name}_#{pointer['id']}"]
+      Q.resolve @_content["#{name}_#{pointer['id']}"]
     else
       model = new (@ruhoh.resources.model(name))(@ruhoh, pointer)
       model.content().then (content) =>
-        @content["#{name}_#{pointer['id']}"] = content
+        @_content["#{name}_#{pointer['id']}"] = content
 
   urls: ->
-    @urls["base_path"] = @ruhoh.base_path
-    return @urls if @urls.keys.length > 1 # consider base_url
+    @_urls["base_path"] = @ruhoh.base_path
+    return @_urls if _.keys(@_urls).length > 1 # consider base_url
 
     for name in @ruhoh.resources.all()
       continue unless @ruhoh.resources.has_collection(name)
       collection = @ruhoh.resources.load_collection(name)
       continue unless collection.url_endpoint
-      @urls[name] = @ruhoh.to_url(collection.url_endpoint)
+      @_urls[name] = @ruhoh.to_url(collection.url_endpoint())
     
-    @urls
+    @_urls
 
   # Get the config for a given resource.
   config: (name) ->
     name = name.toLowerCase()
-    return @config[name] if @config[name]
-    @config[name] = @ruhoh.resources.load_collection(name).config()
+    return @_config[name] if @_config[name]
+    @_config[name] = @ruhoh.resources.load_collection(name).config()
   
   clear: (name) ->
     @["_#{name}"] = null
