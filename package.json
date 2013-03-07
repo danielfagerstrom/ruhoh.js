@@ -4,7 +4,7 @@
   "description": "Ruhoh universal static blog api in javascript",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --recursive --compilers coffee:coffee-script spec"
   },
   "repository": "",
   "keywords": [
@@ -22,6 +22,12 @@
     "js-yaml": "~2.0.1",
     "underscore": "~1.4.4",
     "coffee-script": "~1.4.0",
-    "moment": "~2.0.0"
+    "moment": "~2.0.0",
+    "mustache": "git://github.com/danielfagerstrom/mustache.js.git",
+    "marked": "~0.2.8"
+  },
+  "devDependencies": {
+    "mocha": "~1.8.1",
+    "chai": "~1.5.0"
   }
 }
