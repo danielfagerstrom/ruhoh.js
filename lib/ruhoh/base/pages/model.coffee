@@ -95,10 +95,12 @@ class Model extends BaseModel
     format ||= "/:path/:filename"
 
     url = if ':' in format
-      title = utils.to_url_slug(page_data['title'])
+      title = utils.to_url_slug(page_data['title'] ? '')
       filename = FS.base(page_data['id'])
-      category = page_data['categories']?[0]
-      category = (utils.to_url_slug(c) for c in category.split('/')).join('/') if category
+      if category = page_data['categories']
+        category = [category] unless _.isArray category
+        category = category[0]
+        category = (utils.to_url_slug(c) for c in category.split('/')).join('/') if category
       relative_path = FS.directory(page_data['id'])
       relative_path = "" if relative_path == "."
       data = {
@@ -124,7 +126,7 @@ class Model extends BaseModel
       format.replace(/\/+/g, "/")
     else
       # Use the literal permalink if it is a non-tokenized string.
-      (encodeURIComponent p for p in format.replace(/^\//g, '')).split('/').join('/')
+      (encodeURIComponent p for p in format.replace(/^\//g, '').split('/')).join('/')
 
     # Only recognize extensions registered from a 'convertable' module.
     # This means 'non-convertable' extensions should pass-through.
