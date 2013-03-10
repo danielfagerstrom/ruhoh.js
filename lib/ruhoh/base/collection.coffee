@@ -1,4 +1,3 @@
-path = require 'path'
 _ = require 'underscore'
 Q = require 'q'
 FS = require 'q-io/fs'
@@ -31,9 +30,9 @@ class Collection
   # @returns[Boolean]
   hasPaths: ->
     Q.all(
-      for path_ in (h.path for h in @paths())
-        do (path_) =>
-          FS.isDirectory path.join(path_, @namespace())
+      for path in (h.path for h in @paths())
+        do (path) =>
+          FS.isDirectory FS.join(path, @namespace())
     ).then (hasDirectories) ->
       _.some hasDirectories
 
@@ -96,7 +95,7 @@ class Collection
           namespaced_path = FS.join(path, @namespace())
           pattern = id or @glob()
           Q.nfcall(glob, pattern, cwd: namespaced_path, mark: true).then (files) =>
-            for id in files when (if block? then block id, this else @_valid_file id)
+            for id in files when (if block? then block(id, this) else @_valid_file id)
               {
                 id: id
                 realpath: FS.absolute(FS.join namespaced_path, id)
