@@ -90,3 +90,6 @@ module.exports =
   chomp: (string, separator=/(\n|\r)+$/) ->
     separator = new RegExp(@escapeRegExp(separator) + "$") unless _.isRegExp separator
     string.replace separator, ''
+
+  compare: (a, b) ->
+    if a < b then -1 else if a > b then 1 else 0
