@@ -33,7 +33,10 @@ describe 'base collection', ->
     collection.hasPaths().should.become(true).and.notify(done)
 
   it 'should have a resource specific config', ->
-    collection.config().should.eql(layout: 'docs-2')
+    collection.config().should.eql(
+      layout: 'docs-2'
+      sort: ['date', 'desc']
+    )
 
   it 'should generate all data resources for this resource type', (done) ->
     collection.generate().done (collection) ->

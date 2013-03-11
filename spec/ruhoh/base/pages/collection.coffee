@@ -22,6 +22,7 @@ describe 'pages collection', ->
   it 'should have a resource specific config', ->
     collection.config().should.eql(
       layout: 'docs-2'
+      sort: ['date', 'desc']
       permalink: '/:path/:filename'
       summary_lines: 20
       latest: 2

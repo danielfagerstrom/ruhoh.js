@@ -1,2 +1,3 @@
 pages:
   layout: docs-2
+  sort: ['date', 'desc']
