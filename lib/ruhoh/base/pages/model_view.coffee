@@ -22,10 +22,10 @@ class ModelView extends BaseModelView
       utils.compare other_data, this_data
 
   categories: ->
-    @collection.to_categories(super)
+    @collection.to_categories(super())
 
   tags: ->
-    @collection.to_tags(super)
+    @collection.to_tags(super())
 
   # Lazy-load the page body.
   # Notes:
@@ -80,21 +80,21 @@ class ModelView extends BaseModelView
     # Ruhoh::Converter.convert(summary, id) # FIXME
 
   next: ->
-    return unless id
-    all_cache = @collection.all()
-    index = (i for p, i in all_cache when p.id is id)[0] ? -1
-    return unless index && (index-1 >= 0)
-    _next = all_cache[index-1]
-    return unless _next
-    _next
+    return unless @id
+    @collection.all().then (all_cache) =>
+      index = (i for p, i in all_cache when p.id is @id)[0] ? -1
+      return unless index && (index-1 >= 0)
+      _next = all_cache[index-1]
+      return unless _next
+      _next
 
   previous: ->
-    return unless id
-    all_cache = @collection.all()
-    index = (i for p, i in all_cache when p.id is id)[0] ? -1
-    return unless index && (index+1 >= 0)
-    prev = all_cache[index+1]
-    return unless prev
-    prev
+    return unless @id
+    @collection.all().then (all_cache) =>
+      index = (i for p, i in all_cache when p.id is @id)[0] ? -1
+      return unless index && (index+1 >= 0)
+      prev = all_cache[index+1]
+      return unless prev
+      prev
 
 module.exports = ModelView
