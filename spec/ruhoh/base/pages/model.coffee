@@ -27,7 +27,7 @@ describe 'page model', ->
       result.should.eql(
         'foo-bar/index.md':
           title: 'Home'
-          date: new Date("2013-03-08")
+          date: new Date("2013-02-08")
           layout: 'page'
           pointer: 
             id: 'foo-bar/index.md'
@@ -46,7 +46,7 @@ describe 'page model', ->
     .should.become(
       data:
         title: "Home"
-        date: new Date("2013-03-08")
+        date: new Date("2013-02-08")
         layout: "page"
       content:
         'Home\n'
