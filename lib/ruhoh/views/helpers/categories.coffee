@@ -8,7 +8,7 @@ categories =
       categories_url = url
       break if url of @ruhoh.db.routes
 
-    @ruhoh.db[@resource_name]().then (resources) =>
+    @ruhoh.db[@resource_name()]().then (resources) =>
       dict = {}
       for key, resource of resources when (cats = resource['categories'])
         cats = [cats] unless _.isArray cats
@@ -22,9 +22,9 @@ categories =
               'name': cat, 
               'url': "#{categories_url}##{cat}-ref"
             }
-            dict[cat][@resource_name] = []
+            dict[cat][@resource_name()] = []
 
-          dict[cat][@resource_name].push resource['id']
+          dict[cat][@resource_name()].push resource['id']
       dict["all"] = (cat for key, cat of dict)
       dict
         

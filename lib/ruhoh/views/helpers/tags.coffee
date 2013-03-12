@@ -8,7 +8,7 @@ tags =
       tags_url = url
       break if url of @ruhoh.db.routes
 
-    @ruhoh.db[@resource_name]().then (resources) =>
+    @ruhoh.db[@resource_name()]().then (resources) =>
       dict = {}
       for key, resource of resources when (tags = resource['tags'])
         tags = [tags] unless _.isArray tags
@@ -21,9 +21,9 @@ tags =
               'name': tag,
               'url': "#{tags_url}##{tag}-ref"
             }
-            dict[tag][@resource_name] = []
+            dict[tag][@resource_name()] = []
 
-          dict[tag][@resource_name].push resource['id']
+          dict[tag][@resource_name()].push resource['id']
       dict["all"] = (tag for key, tag of dict)
       dict
   
