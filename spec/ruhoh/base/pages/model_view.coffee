@@ -6,7 +6,7 @@ Ruhoh = require '../../../../lib/ruhoh'
 PagesModel = require '../../../../lib/ruhoh/base/pages/model'
 PagesModelView = require '../../../../lib/ruhoh/base/pages/model_view'
 
-describe 'page model', ->
+describe 'page model view', ->
   path = FS.join __dirname, 'fixtures'
   ruhoh = null
   model_view = null
@@ -39,8 +39,8 @@ describe 'page model', ->
 
     it 'should order by descending date', ->
       # FIXME: setup with real collection views
-      model_view.collection = resource_name: 'pages'
-      model_view_2.collection = resource_name: 'pages'
+      model_view.collection = resource_name: -> 'pages'
+      model_view_2.collection = resource_name: -> 'pages'
       model_view.compare(model_view_2).should.equal 1
 
   it 'should be initialized', ->
