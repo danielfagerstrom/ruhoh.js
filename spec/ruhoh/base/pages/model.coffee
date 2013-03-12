@@ -29,6 +29,8 @@ describe 'page model', ->
           title: 'Home'
           date: new Date("2013-02-08")
           layout: 'page'
+          tags: 'foo'
+          categories: 'bar'
           pointer: 
             id: 'foo-bar/index.md'
             resource: 'pages'
@@ -48,6 +50,8 @@ describe 'page model', ->
         title: "Home"
         date: new Date("2013-02-08")
         layout: "page"
+        tags: "foo"
+        categories: "bar"
       content:
         'Home\n'
     ).and.notify(done)
