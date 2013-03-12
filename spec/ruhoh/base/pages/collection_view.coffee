@@ -6,7 +6,7 @@ Ruhoh = require '../../../../lib/ruhoh'
 PagesCollection = require '../../../../lib/ruhoh/base/pages/collection'
 PagesCollectionView = require '../../../../lib/ruhoh/base/pages/collection_view'
 
-# TODO: no tests for paginator, paginator_navigation, categories, tags
+# TODO: no tests for paginator, paginator_navigation
 
 describe 'pages collection view', ->
   path = FS.join __dirname, 'fixtures'
@@ -61,3 +61,8 @@ describe 'pages collection view', ->
       collated[0].months[0].pages.should.have.length 1
       done()
 
+  it 'should list the categories in the collection', (done) ->
+    collection_view.categories().should.eventually.include.keys(['all', 'bar']).and.notify(done)
+
+  it 'should list the tags in the collection', (done) ->
+    collection_view.tags().should.eventually.include.keys('all', 'foo').and.notify(done)
