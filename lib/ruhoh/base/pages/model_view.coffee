@@ -5,7 +5,7 @@ class ModelView extends BaseModelView
 
   # Default order by alphabetical title name.
   compare: (other) ->
-    sort = @ruhoh.db.config(@collection.resource_name)["sort"] || []
+    sort = @ruhoh.db.config(@collection.resource_name())["sort"] || []
     attribute = sort[0] || "title"
     direction = sort[1] || "asc"
 
