@@ -5,7 +5,14 @@ class ModelView
   # attr_accessor :collection, :master
   
   constructor: (@ruhoh, data={}) ->
-    _.extend this, data if _.isObject(data)
+    if _.isObject(data)
+      for key, value of data
+        # tags and catgories are overrided in pages model view and needs to be handled by functions
+        key = "_#{key}" if key in ['tags', 'categories']
+        @[key] = value
+
+  categories: -> @_categories
+  tags: -> @_tags
   
   compare: (other) ->
     # id <=> other.id
