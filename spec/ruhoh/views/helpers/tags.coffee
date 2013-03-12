@@ -24,7 +24,7 @@ describe 'tags helper', ->
 
   beforeEach (done) ->
     ruhoh = new Ruhoh()
-    pages = {ruhoh, resource_name: 'pages'}
+    pages = {ruhoh, resource_name: -> 'pages'}
     _.extend pages, tags # mixin
     ruhoh.setup_all(source: path).done ->
       done()
