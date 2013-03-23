@@ -5,6 +5,9 @@ glob = require 'glob'
 logger = require './ruhoh/logger'
 utils = require './ruhoh/utils'
 friend = require './ruhoh/friend'
+
+MasterView = require './ruhoh/views/master_view'
+
 ResourcesInterface = require './ruhoh/resources_interface'
 DB = require './ruhoh/db'
 
@@ -18,8 +21,7 @@ class Ruhoh
     @db = new DB(this)
 
   master_view: (pointer) ->
-    throw new Error 'not implemented'
-    new Ruhoh.Views.MasterView(self, pointer)
+    new MasterView(this, pointer)
 
   # Public: Setup Ruhoh utilities relative to the current application directory.
   # Returns boolean on success/failure
@@ -34,6 +36,7 @@ class Ruhoh
   
   _load_config: ->
     utils.parse_yaml_file(@base, "config.yml").then (config) =>
+      config ?= {}
       config['compiled'] = if config['compiled'] then path.resolve(config['compiled'], process.cwd()) else "compiled"
 
       config['base_path'] = config['base_path']?.strip()
