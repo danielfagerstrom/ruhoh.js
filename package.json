@@ -23,7 +23,7 @@
     "underscore": "~1.4.4",
     "coffee-script": "~1.4.0",
     "moment": "~2.0.0",
-    "mustache": "git://github.com/danielfagerstrom/mustache.js.git",
+    "mustache": "git://github.com/danielfagerstrom/mustache.js.git#deferred",
     "marked": "~0.2.8"
   },
   "devDependencies": {
