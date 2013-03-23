@@ -36,7 +36,7 @@ describe 'page model', ->
             resource: 'pages'
             realpath: '/home/daniel/dev/ruhoh.js/spec/ruhoh/base/pages/fixtures/pages/foo-bar/index.md'
           id: 'foo-bar/index.md'
-          url: '/pages/foo-bar/index.md'
+          url: '/pages/foo-bar'
       )
       done()
 
@@ -96,7 +96,7 @@ describe 'page model', ->
       categories: ['a', 'b']
       id: 'foo/bar.md'
       date: '2013-03-09'
-    ).should.equal '/foo/a/3/9/bar.md'
+    ).should.equal '/foo/a/3/9/bar'
 
   it 'should create a permalink from a literal permalink config', ->
     model.permalink(permalink: '/foo/bar').should.equal '/foo/bar'

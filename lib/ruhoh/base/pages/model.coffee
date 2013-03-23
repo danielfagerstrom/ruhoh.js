@@ -4,6 +4,7 @@ moment = require 'moment'
 _ = require 'underscore'
 BaseModel = require '../model'
 utils = require '../../utils'
+converter = require '../../converter'
 
 class Model extends BaseModel
   resource_name: 'pages'
@@ -131,10 +132,8 @@ class Model extends BaseModel
     # Only recognize extensions registered from a 'convertable' module.
     # This means 'non-convertable' extensions should pass-through.
     #
-    # FIXME: converter not implemented yet
-    # if Ruhoh::Converter.extensions.include?(File.extname(url)) :)
-    #   url = url.gsub(%r{#\{File.extname(url)}$}, '.html') :)
-    # end :)
+    if (ext = FS.extension(url)) in converter.extensions()
+      url = url.replace(new RegExp("#{ext}$"), '.html')
 
     unless (page_data['permalink_ext'] || @config()['permalink_ext'])
       url = url.replace(/index.html$/g, '').replace(/\.html$/, '')

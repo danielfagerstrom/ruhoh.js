@@ -23,7 +23,7 @@ describe 'master view', ->
       done()
 
   it 'should be initialized from a pointer', (done) ->
-    master_view.page_data.should.eventually.have.property('url', '/pages/foo.md').and.notify(done)
+    master_view.page_data.should.eventually.have.property('url', '/pages/foo').and.notify(done)
 
   it 'should render a full page', (done) ->
     master_view.render_full().done (result) ->
