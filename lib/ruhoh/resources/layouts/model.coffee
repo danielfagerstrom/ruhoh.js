@@ -1,6 +1,8 @@
+YAML = require 'js-yaml'
 FS = require 'q-io/fs'
 BaseModel = require '../../base/model'
 utils = require '../../utils'
+log = require '../../logger'
 
 class Model extends BaseModel
   resource_name: 'layouts'
@@ -28,7 +30,7 @@ class Model extends BaseModel
         
         { 
           "data": data,
-          "content": page.replace(utils::FMregex, '')
+          "content": page.replace(utils.FMregex, '')
         }
       catch e
         log.error("ERROR in #{path}: #{e.message}")
