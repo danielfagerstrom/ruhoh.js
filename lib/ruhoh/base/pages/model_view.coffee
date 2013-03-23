@@ -29,12 +29,12 @@ class ModelView extends BaseModelView
 
   # Lazy-load the page body.
   # Notes:
-  # @content is not used for caching, it's used to manually
+  # @_content is not used for caching, it's used to manually
   # define content for a given page. Useful in the case that
   # you want to model a resource that does not actually
   # reference a file.
   content: ->
-    return @content if @content
+    return @_content if @_content
     @get_page_content().spread (content, id) =>
       content = @master.render(content)
       # Ruhoh::Converter.convert(content, id) # FIXME
