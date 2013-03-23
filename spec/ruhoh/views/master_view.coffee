@@ -27,13 +27,13 @@ describe 'master view', ->
 
   it 'should render a full page', (done) ->
     master_view.render_full().done (result) ->
-      result.should.eql("<body>\n<div>\ntitle: Foo\n\n</div>\n\n</body>\n")
+      result.should.eql("<body>\n<div>\n<p>title: Foo</p>\n\n</div>\n\n</body>\n")
       done()
 
   it 'should render the page content', (done) ->
     # master_view.render_content().should.become('title: Foo\n').and.notify(done)
     master_view.render_content().done (result) ->
-      result.should.eql('title: Foo\n')
+      result.should.eql('<p>title: Foo</p>\n')
       done()
 
   it 'should render a template', (done) ->

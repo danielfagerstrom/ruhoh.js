@@ -1,5 +1,6 @@
 BaseModelView = require '../model_view'
 utils = require '../../utils'
+converter = require '../../converter'
 
 class ModelView extends BaseModelView
 
@@ -36,8 +37,8 @@ class ModelView extends BaseModelView
   content: ->
     return @_content if @_content
     @get_page_content().spread (content, id) =>
-      content = @master.render(content)
-      # Ruhoh::Converter.convert(content, id) # FIXME
+      @master.render(content).then (content) =>
+        converter.convert(content, id)
 
   get_page_content: ->
     @ruhoh.db.content(@pointer).then (content) =>
@@ -76,8 +77,8 @@ class ModelView extends BaseModelView
       if line.match /^\[[^\]]+\]:/
         summary += "\n#{line}"
 
-    summary = @master.render(summary)
-    # Ruhoh::Converter.convert(summary, id) # FIXME
+    @master.render(summary).then (summary) =>
+      converter.convert(summary, id)
 
   next: ->
     return unless @id
