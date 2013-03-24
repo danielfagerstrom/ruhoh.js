@@ -58,7 +58,7 @@ describe 'pages collection view', ->
     collection_view.paginator().should.eventually.have.length(2).and.notify(done)
 
   # FIXME: more interesting test cases for paginator_navigation
-  it 'should have paginator navigation klinks', (done) ->
+  it 'should have paginator navigation links', (done) ->
     collection_view.paginator_navigation().should
     .become([{url: '/index/1', name: '1', is_active_page: true}])
     .and.notify(done)
