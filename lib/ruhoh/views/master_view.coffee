@@ -142,8 +142,8 @@ class MasterView # extends RMustache
           @master_layout = layouts[@sub_layout['data']['layout']]
           throw new Error "Layout does not exist: #{@sub_layout['data']['layout']}" unless @master_layout
 
-        page_data['sub_layout'] = @sub_layout['id'] # rescue nil
-        page_data['master_layout'] = @master_layout['id'] # rescue nil
+        page_data['sub_layout'] = @sub_layout?['id']
+        page_data['master_layout'] = @master_layout?['id']
         @page_data = page_data
   
   # Expand the layout(s).
