@@ -1,3 +1,4 @@
+Q = require 'q'
 _ = require 'underscore'
 FS = require 'q-io/fs'
 moment = require 'moment'
@@ -31,36 +32,38 @@ class CollectionView extends BaseCollectionView
   # current_page is set via a compiler or previewer
   # in which it can discern what current_page to serve
   paginator: ->
-    per_page = @ruhoh.db.config(@resource_name())["paginator"]?["per_page"] ? 5
-    current_page = @master.page_data['current_page']
-    current_page = if current_page is 0 then 1 else current_page
-    offset = (current_page-1)*per_page
+    Q.when(@master.page_data).then (page_data) =>
+      per_page = @ruhoh.db.config(@resource_name())["paginator"]?["per_page"] ? 5
+      current_page = page_data['current_page'] ? 0
+      current_page = if current_page is 0 then 1 else current_page
+      offset = (current_page-1)*per_page
 
-    @all().then (all) ->
-      page_batch = all[offset...per_page]
-      throw new Error "Page does not exist" unless page_batch
-      page_batch
+      @all().then (all) ->
+        page_batch = all[offset...per_page]
+        throw new Error "Page does not exist" unless page_batch
+        page_batch
 
   paginator_navigation: ->
-    config = @ruhoh.db.config(@resource_name())["paginator"] || {}
-    @all().then (all) =>
-      page_count = all.length
-      total_pages = (page_count/Math.ceil(config["per_page"]))
-      current_page = @master.page_data['current_page']
-      current_page = if current_page is 0 then 1 else current_page
+    Q.when(@master.page_data).then (page_data) =>
+      config = @ruhoh.db.config(@resource_name())["paginator"] || {}
+      @all().then (all) =>
+        page_count = all.length
+        total_pages = Math.ceil(page_count/config["per_page"])
+        current_page = page_data['current_page'] ? 0
+        current_page = if current_page is 0 then 1 else current_page
 
-      pages = for i in [0...total_pages]
-        url = if i is 0 && config["root_page"]
-          config["root_page"]
-        else
-          "#{config['namespace']}/#{i+1}"
-        
-        {
-          "url": @ruhoh.to_url(url),
-          "name": "#{i+1}",
-          "is_active_page": (i+1 == current_page)
-        }
-      pages 
+        pages = for i in [0...total_pages]
+          url = if i is 0 && config["root_page"]
+            config["root_page"]
+          else
+            "#{config['namespace']}/#{i+1}"
+          
+          {
+            "url": @ruhoh.to_url(url),
+            "name": "#{i+1}",
+            "is_active_page": (i+1 == current_page)
+          }
+        pages 
 
   # Internal: Create a collated pages data structure.
   #

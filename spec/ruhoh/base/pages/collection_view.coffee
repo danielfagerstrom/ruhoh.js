@@ -6,8 +6,6 @@ Ruhoh = require '../../../../lib/ruhoh'
 PagesCollection = require '../../../../lib/ruhoh/base/pages/collection'
 PagesCollectionView = require '../../../../lib/ruhoh/base/pages/collection_view'
 
-# TODO: no tests for paginator, paginator_navigation
-
 describe 'pages collection view', ->
   path = FS.join __dirname, 'fixtures'
   ruhoh = null
@@ -23,6 +21,7 @@ describe 'pages collection view', ->
       realpath: FS.join path, resource, id
     ruhoh.setup_all(source: path).then( ->
       collection_view = new PagesCollectionView collection
+      collection_view.master = ruhoh.master_view pointer
       ruhoh.db.get pointer
     ).done (page_data) ->
       model = page_data
@@ -53,6 +52,16 @@ describe 'pages collection view', ->
     collection_view.latest().done (latest) ->
       _.pluck(latest, 'title').should.eql ['Foo', 'Home']
       done()
+
+  # FIXME: more interesting test cases for paginator
+  it 'should do pagination', (done) ->
+    collection_view.paginator().should.eventually.have.length(2).and.notify(done)
+
+  # FIXME: more interesting test cases for paginator_navigation
+  it 'should have paginator navigation klinks', (done) ->
+    collection_view.paginator_navigation().should
+    .become([{url: '/index/1', name: '1', is_active_page: true}])
+    .and.notify(done)
 
   it 'should create a collated pages structure', (done) ->
     collection_view.collated().done (collated) ->
