@@ -27,12 +27,11 @@ describe 'page model view', ->
       realpath: FS.join path, resource, id
     ruhoh.setup_all(source: path).then( ->
       collection_view = new PagesCollectionView collection
+      collection_view.master = ruhoh.master_view pointer
       ruhoh.db.get pointer
     ).done (page_data) ->
       model_view = collection_view.new_model_view page_data
       done()
-
-  # TODO: test content, is_active_page, summary
 
   describe 'compare', ->
 
@@ -65,8 +64,18 @@ describe 'page model view', ->
       tags[0].name.should.equal 'foo'
       done()
 
+  it 'should have content', (done) ->
+    model_view.content().should.become('<p>Home</p>\n').and.notify(done)
+
   it 'should have page content', (done) ->
     model_view.get_page_content().should.become(['Home\n', 'foo-bar/index.md']).and.notify(done)
+
+  it 'should know if it is the active page', (done) ->
+    model_view.is_active_page().should.eventually.be.true.and.notify(done)
+
+  # FIXME: doesn't test anything interesting, but at least the method works in simple cases
+  it 'should have a summary', (done) ->
+    model_view.summary().should.become('<p>Home</p>\n').and.notify(done)
 
   it 'should have a next sibling', (done) ->
     Q.when(model_view.next(), (next) ->

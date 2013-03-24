@@ -1,3 +1,4 @@
+Q = require 'q'
 BaseModelView = require '../model_view'
 utils = require '../../utils'
 converter = require '../../converter'
@@ -45,7 +46,8 @@ class ModelView extends BaseModelView
       [content, @id]
   
   is_active_page: ->
-    id == @master.page_data['id']
+    Q.when @master.page_data, (page_data) =>
+      @id == page_data['id']
   
   # Truncate the page content relative to a line_count limit.
   # This is optimized for markdown files in which content is largely
@@ -54,31 +56,33 @@ class ModelView extends BaseModelView
   # so blank lines don't count toward the limit.
   # Always break the content on a blank line only so result stays formatted nicely.
   summary: ->
-    resource = @pointer["resource"]
-    [content, id] = @get_page_content()
-    line_limit = @ruhoh.db.config(resource)['summary_lines']
-    line_count = 0
-    line_breakpoint = content.lines.length
+    @get_page_content().spread (content, id) =>
+      debugger
+      resource = @pointer["resource"]
+      line_limit = @ruhoh.db.config(resource)['summary_lines']
+      line_count = 0
+      lines = content.split /^/
+      line_breakpoint = lines.length
 
-    for line, i in content.lines
-      if line.match /^\s*$/  # line with only whitespace
-        if line_count >= line_limit
-          line_breakpoint = i
-          break
-      else
-        line_count += 1
+      for line, i in lines
+        if line.match /^\s*$/  # line with only whitespace
+          if line_count >= line_limit
+            line_breakpoint = i
+            break
+        else
+          line_count += 1
 
-    summary = content.lines.to_a[0...line_breakpoint].join('')
+      summary = lines[0...line_breakpoint].join('')
 
-    # The summary may be missing some key items needed to render properly.
-    # So search the rest of the content and add it to the summary.
-    for line, i in content.lines.with_index(line_breakpoint)
-      # Add lines containing destination urls.
-      if line.match /^\[[^\]]+\]:/
-        summary += "\n#{line}"
+      # The summary may be missing some key items needed to render properly.
+      # So search the rest of the content and add it to the summary.
+      for line in lines[line_breakpoint...]
+        # Add lines containing destination urls.
+        if line.match /^\[[^\]]+\]:/
+          summary += "\n#{line}"
 
-    @master.render(summary).then (summary) =>
-      converter.convert(summary, id)
+      @master.render(summary).then (summary) =>
+        converter.convert(summary, id)
 
   next: ->
     return unless @id
