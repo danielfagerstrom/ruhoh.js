@@ -2,6 +2,7 @@ FS = require 'q-io/fs'
 HTTP = require 'q-io/http'
 Apps = require 'q-io/http-apps'
 Ruhoh = require '../../ruhoh'
+PagesPreviewer = require '../base/pages/previewer'
 
 preview = (opts={}) ->
   opts.watch ||= true
@@ -27,14 +28,14 @@ preview = (opts={}) ->
       url: h.url
       prefix:
         if ruhoh.resources.has_previewer h.name
-          ruhoh.resources.load_previewer h.name
+          ruhoh.resources.load_previewer(h.name).call
         else
           collection = ruhoh.resources.load_collection h.name
           try_files = for data in collection.paths().slice().reverse()
             FS.join data.path, collection.namespace()
       app:
         if ruhoh.resources.has_previewer h.name
-          ruhoh.resources.load_previewer h.name
+          ruhoh.resources.load_previewer(h.name).call
         else
           collection = ruhoh.resources.load_collection h.name
           try_files = for data in collection.paths().slice().reverse()
@@ -53,6 +54,8 @@ preview = (opts={}) ->
 
     console.log mappings
 
+    pagesPreviewer = new PagesPreviewer ruhoh
+
     Apps.Error(
       Apps.Select (request) ->
         for mapping in mappings
@@ -62,13 +65,10 @@ preview = (opts={}) ->
             console.log "match: #{JSON.stringify mapping}"
             console.log mapping.app
             return mapping.app
-        return null
-        # FIXME
+
         # The generic Page::Previewer is used to render any/all page-like resources,
         # since they likely have arbitrary urls based on permalink settings.
-        # map '/' do :)
-        #   run Ruhoh::Base::Pages::Previewer.new(ruhoh) :)
-        # end :)
+        pagesPreviewer.call
         
     , true)
 
@@ -83,4 +83,4 @@ if require.main is module
     .listen(port)
   ).done()
 
-  console.log "Server running at port: #{port}"  
+  console.log "Server running at port: #{port}"
