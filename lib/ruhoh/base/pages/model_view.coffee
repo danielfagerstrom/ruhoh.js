@@ -57,7 +57,6 @@ class ModelView extends BaseModelView
   # Always break the content on a blank line only so result stays formatted nicely.
   summary: ->
     @get_page_content().spread (content, id) =>
-      debugger
       resource = @pointer["resource"]
       line_limit = @ruhoh.db.config(resource)['summary_lines']
       line_count = 0
