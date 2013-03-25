@@ -24,10 +24,10 @@ class ModelView extends BaseModelView
       utils.compare other_data, this_data
 
   categories: ->
-    @collection.to_categories(super())
+    @collection.to_categories()(super())
 
   tags: ->
-    @collection.to_tags(super())
+    @collection.to_tags()(super())
 
   # Lazy-load the page body.
   # Notes:

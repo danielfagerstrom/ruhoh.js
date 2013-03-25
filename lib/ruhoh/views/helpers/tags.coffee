@@ -28,7 +28,7 @@ tags =
       dict
   
   # Convert single or Array of tag ids (names) to tag hash(es).
-  to_tags: (sub_context) ->
+  to_tags: -> (sub_context) =>
     sub_context = [sub_context] unless _.isArray sub_context
     @tags().then (tags) ->
       _.compact(tags[id] for id in sub_context)

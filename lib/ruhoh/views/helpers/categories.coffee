@@ -29,7 +29,7 @@ categories =
       dict
         
   # Convert single or Array of category ids (names) to category hash(es).
-  to_categories: (sub_context) ->
+  to_categories: -> (sub_context) =>
     sub_context = [sub_context] unless _.isArray sub_context
     @categories().then (categories) ->
       _.compact(categories[id] for id in sub_context)

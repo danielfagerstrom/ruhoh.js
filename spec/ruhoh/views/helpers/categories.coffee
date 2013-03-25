@@ -35,7 +35,7 @@ describe 'categories helper', ->
       done()
 
   it 'should convert category ids to category dicts', (done) ->
-    pages.to_categories(['bar', 'test']).done (cats) ->
+    pages.to_categories()(['bar', 'test']).done (cats) ->
       cats.should.deep.equal [CATS.bar, CATS.test]
       done()
       

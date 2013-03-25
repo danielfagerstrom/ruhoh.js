@@ -35,6 +35,6 @@ describe 'tags helper', ->
       done()
 
   it 'should convert tag ids to tag dicts', (done) ->
-    pages.to_tags(['a', 'b']).done (tags) ->
+    pages.to_tags()(['a', 'b']).done (tags) ->
       tags.should.deep.equal [TAGS.a, TAGS.b]
       done()

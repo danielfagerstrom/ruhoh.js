@@ -62,27 +62,27 @@ class MasterView # extends RMustache
       friend.say "partial not found: '#{name}'".yellow if p is null
       p + "\n" # newline ensures proper markdown rendering.
 
-  to_json: (sub_context) ->
+  to_json: -> (sub_context) ->
     JSON.stringify sub_context
 
-  to_pretty_json: (sub_context) ->
+  to_pretty_json: -> (sub_context) ->
     JSON.stringify sub_context, null, 2
   
-  debug: (sub_context) ->
+  debug: -> (sub_context) ->
     friend.say "?debug:".yellow
     friend.say sub_context.constructor.name.magenta 
     friend.say JSON.stringify(sub_context, null, 2).cyan 
 
     "<pre>#{sub_context.constructor.name}\n#{JSON.stringify sub_context, null, 2}</pre>"
 
-  raw_code: (sub_context) ->
+  raw_code: -> (sub_context) ->
     code = sub_context.replace(/{/g, '&#123;').replace(/}/g, '&#125;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/_/g, "&#95;")
     "<pre><code>#{code}</code></pre>\n"
   
   # My Post Title ===> my-post-title
   # Handy for transforming ids into css-classes in your views.
   # @returns[String]
-  to_slug: (sub_context) ->
+  to_slug: -> (sub_context) ->
     utils.to_slug(sub_context)
   
   # Public: Formats the path to the compiled file based on the URL.
