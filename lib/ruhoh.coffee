@@ -57,9 +57,9 @@ class Ruhoh
       base: @base
       system: path.join(Root, "system")
       compiled: @config()["compiled"]
-    if false and theme = @db.config('theme')['name'] # FIXME
+    if theme = @db.config('theme')['name']
       friend.say "Using theme: \"#{theme}\""
-      @path.theme = path.join(@base, theme)
+      @paths.theme = path.join(@base, 'themes', theme)
 
     @paths
 
