@@ -81,7 +81,7 @@ class DB
         @_content["#{name}_#{pointer['id']}"] = content
 
   urls: ->
-    @_urls["base_path"] = @ruhoh.base_path
+    @_urls["base_path"] = @ruhoh.base_path()
     return @_urls if _.keys(@_urls).length > 1 # consider base_url
 
     for name in @ruhoh.resources.all()
