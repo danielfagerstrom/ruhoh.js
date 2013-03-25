@@ -31,7 +31,6 @@ describe 'page previewer', ->
       done()
       
   it 'should respond on /pages/1', (done) ->
-    debugger
     response = previewer.call(pathInfo: '/pages/1')
     response.should.include.keys 'status', 'headers', 'body'
     response.status.should.eql 200
