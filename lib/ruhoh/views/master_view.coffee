@@ -1,5 +1,5 @@
 _ = require 'underscore'
-Mustache = require 'mustache'
+Mustache = require './rmustache'
 Q = require 'q'
 friend = require '../friend'
 utils = require '../utils'
