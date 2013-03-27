@@ -119,14 +119,18 @@ class MasterView # extends RMustache
   # Uses method_missing to catch calls to 'to_<resource>` contextual helper.
   # @returns[Array] the resource model view objects or raw data hash.
   _resource_generator_for: (resource, sub_context) ->
-    collection_view = @_load_collection_view_for(resource)
-    _.compact(for id in sub_context
-      data = @ruhoh.db[resource][id] || {}
-      if collection_view && collection_view['new_model_view']
-        collection_view.new_model_view(data)
-      else
-        data
-    )
+    Q.all([
+      Q.when(@_load_collection_view_for resource),
+      @ruhoh.db[resource]()
+    ]).spread (collection_view, collection) =>
+      sub_context = [sub_context] unless _.isArray sub_context
+      _.compact(for id in sub_context
+        data = collection[id] || {}
+        if collection_view && collection_view['new_model_view']
+          collection_view.new_model_view(data)
+        else
+          data
+      )
 
   _process_layouts: ->
     Q.when(@page_data).then (page_data) =>

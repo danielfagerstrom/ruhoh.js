@@ -5,7 +5,7 @@ FS = require 'q-io/fs'
 Ruhoh = require '../../../lib/ruhoh'
 MasterView = require '../../../lib/ruhoh/views/master_view'
 
-# TODO: no tests for to_json, to_pretty_json, debug, raw_code, to_slug, compiled_path
+# TODO: no tests for to_json, to_pretty_json, debug, raw_code, to_slug, compiled_path, <resource>, to_|resource>
 
 describe 'master view', ->
   path = FS.join __dirname, 'fixtures'
