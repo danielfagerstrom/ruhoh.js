@@ -5,7 +5,6 @@ Mustache.Context::_lookup = Mustache.Context::lookup
 
 # Replace lookup method to catch helper expressions
 Mustache.Context::lookup = (key) ->
-  debugger
   return @_lookup(key) unless '?' in key
   keys = key.split('?')
   context = keys[0]
@@ -17,8 +16,8 @@ Mustache.Context::lookup = (key) ->
       helper_func = @_lookup(helper)
       if Q.isPromise helper_func
         return context = do (context) ->
-          helper_func.then (helper_func) -> helper_func(context)
-      context = helper_func context
+          helper_func.then (helper_func) -> helper_func?(context)
+      context = helper_func?(context)
 
     if Q.isPromise context
       return context.then (ctx) ->
