@@ -103,7 +103,7 @@ class MasterView # extends RMustache
         @[resource] = =>
           @_load_collection_view_for resource
 
-        @["to_#{resource}"] = (args...) =>
+        @["to_#{resource}"] = => (args...) =>
           @_resource_generator_for resource, args...
 
   # Load collection views dynamically when calling a resources name.
