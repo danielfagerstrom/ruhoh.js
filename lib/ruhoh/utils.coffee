@@ -36,7 +36,7 @@ module.exports =
   
   # My Post Title ===> my-post-title
   to_slug: (title) ->
-    title = title.toLowerCase().trim().replace(/[\W+]/g, '-') # FIXME: /[^\p{Word}+]/u in original
+    title = (title ? '').toLowerCase().trim().replace(/[\W+]/g, '-') # FIXME: /[^\p{Word}+]/u in original
     title.replace(/^\-+/, '').replace(/\-+$/, '').replace(/\-+/, '-')
   
   report: (name, collection, invalid) ->
@@ -66,7 +66,7 @@ module.exports =
   
   # Thanks ActiveSupport: http://stackoverflow.com/a/1509939/101940
   underscore: (string) ->
-    string.
+    (string ? '').
     replace(/::/g, '/').
     replace(/([A-Z]+)([A-Z][a-z])/g,'$1_$2').
     replace(/([a-z\d])([A-Z])/g,'$1_$2').
