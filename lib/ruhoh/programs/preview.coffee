@@ -1,6 +1,7 @@
 FS = require 'q-io/fs'
 HTTP = require 'q-io/http'
 Apps = require 'q-io/http-apps'
+{FirstFound} = require 'q-io/http-apps/route'
 Ruhoh = require '../../ruhoh'
 PagesPreviewer = require '../base/pages/previewer'
 
@@ -50,7 +51,7 @@ preview = (opts={}) ->
                   )
               )
 
-          Apps.FirstFound try_files
+          FirstFound try_files
 
     console.log mappings
 
