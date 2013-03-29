@@ -113,7 +113,7 @@ class MasterView # extends RMustache
     return null unless @ruhoh.resources.has_collection_view(resource)
     collection_view = @ruhoh.resources.load_collection_view(resource)
     collection_view.master = this
-    collection_view.load_promise ? collection_view
+    collection_view.setup_promise ? collection_view
 
   # Takes an Array or string of resource ids and generates the resource objects
   # Uses method_missing to catch calls to 'to_<resource>` contextual helper.
