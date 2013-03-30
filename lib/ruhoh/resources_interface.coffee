@@ -106,7 +106,7 @@ class ResourcesInterface
         base[type]
       else
         klass = @_camelize(type)
-        friend.say "#{resource} resource set to use:'#{type}' in config.yml but Ruhoh::Resources::#{klass} does not exist.".red
+        friend.say -> @red "#{resource} resource set to use:'#{type}' in config.yml but Ruhoh::Resources::#{klass} does not exist."
         process.exit 1
     else
       if resource in @registered()

@@ -58,7 +58,7 @@ class Ruhoh
       system: path.join(Root, "system")
       compiled: @config()["compiled"]
     if theme = @db.config('theme')['name']
-      friend.say "Using theme: \"#{theme}\""
+      friend.say -> @plain "Using theme: \"#{theme}\""
       @paths.theme = path.join(@base, 'themes', theme)
 
     @paths
@@ -138,7 +138,8 @@ class Ruhoh
   compile: ->
     throw new Error 'not implemented'
     @ensure_paths()
-    friend.say "Compiling for environment: '#{@env()}'"
+    env = @env()
+    friend.say -> @plain "Compiling for environment: '#{env}'"
     FileUtils.rm_r @paths.compiled if File.exist?(@paths.compiled)
     FileUtils.mkdir_p @paths.compiled
     

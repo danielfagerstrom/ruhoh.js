@@ -59,7 +59,7 @@ class MasterView # extends RMustache
 
   partial: (name) ->
     @ruhoh.db.partials().get(name).then (p) ->
-      friend.say "partial not found: '#{name}'".yellow if p is null
+      friend.say (-> @yellow "partial not found: '#{name}'") if p is null
       p + "\n" # newline ensures proper markdown rendering.
 
   to_json: -> (sub_context) ->
@@ -69,9 +69,10 @@ class MasterView # extends RMustache
     JSON.stringify sub_context, null, 2
   
   debug: -> (sub_context) ->
-    friend.say "?debug:".yellow
-    friend.say sub_context.constructor.name.magenta 
-    friend.say JSON.stringify(sub_context, null, 2).cyan 
+    friend.say ->
+      @yellow "?debug:"
+      @magenta sub_context.constructor.name
+      @cyan JSON.stringify(sub_context, null, 2)
 
     "<pre>#{sub_context.constructor.name}\n#{JSON.stringify sub_context, null, 2}</pre>"
 

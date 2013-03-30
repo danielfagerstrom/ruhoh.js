@@ -27,17 +27,18 @@ class Client
     return @[cmd]() if @[cmd]?
 
     unless @ruhoh.resources[cmd]?
-      friend.say "Resource #{cmd} not found".red
+      friend.say -> @red "Resource #{cmd} not found"
       process.exit 1
     
     @ruhoh.setup_all().then( =>
       client = new (@ruhoh.resources.client(cmd))(@ruhoh, data)
+      cmd = @args[1]
   
-      unless client[@args[1]]?
-        friend.say "method '#{@args[1]}' not found for #{client.constructor.name}".red
+      unless client[cmd]?
+        friend.say -> @red "method '#{cmd}' not found for #{client.constructor.name}"
         process.exit 1
   
-      client[@args[1]]()
+      client[cmd]()
     ).done()
 
   # FIXME: just for simplifying testing

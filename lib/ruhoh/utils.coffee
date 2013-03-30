@@ -43,12 +43,13 @@ module.exports =
     count = (dict) -> _.keys(dict).length
     output = "#{count(collection)}/#{count(collection) + count(invalid)} #{name} processed."
     if _.isEmpty(collection) and _.isEmpty(invalid)
-      friend.say "0 #{name} to process."
+      friend.say -> @plain "0 #{name} to process."
     else if _.isEmpty(invalid)
-      friend.say output.green
+      friend.say -> @green output
     else
-      friend.say output.yellow
-      friend.list "#{name} not processed:", invalid
+      friend.say ->
+        @yellow output
+        @list "#{name} not processed:", invalid
   
   # Merges hash with another hash, recursively.
   #
