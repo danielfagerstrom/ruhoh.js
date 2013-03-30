@@ -37,7 +37,7 @@ class Collection
       _.some hasDirectories
 
   config: ->
-    config = @ruhoh.config()[@resource_name] || {}
+    config = (@ruhoh.config()[@resource_name] ?= {})
     unless _.isObject config
       @ruhoh.log.error("'#{@resource_name}' config key in config.yml is a #{typeof config}; it needs to be a Hash (object).")
     config
