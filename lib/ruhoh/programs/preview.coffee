@@ -5,6 +5,25 @@ Apps = require 'q-io/http-apps'
 Ruhoh = require '../../ruhoh'
 PagesPreviewer = require '../base/pages/previewer'
 
+# FS.open's default behavior is to encode to UTF-8 which destroys images :/
+FS._open = FS.open
+FS.open = (path, flags, charset, options) ->
+  if typeof flags == "object"
+    options = flags
+    flags = options.flags
+    charset = options.charset
+  flags ?= "rb" # set binary mode
+  FS._open path, flags, charset, options
+
+# Apps.FileTree fails instead of returning 404 when the root doesn't exist
+FileTree = (root, options) ->
+  fileTree = null
+  (request, response) ->
+    FS.canonical(root).then(
+      (root) -> (fileTree ?= Apps.FileTree(root, options))(request, response),
+      (reason) -> Apps.notFound(request, response)
+    )
+
 preview = (opts={}) ->
   opts.watch ||= true
   opts.env ||= 'development'
@@ -27,13 +46,6 @@ preview = (opts={}) ->
 
     mappings = for h in sorted_urls
       url: h.url
-      prefix:
-        if ruhoh.resources.has_previewer h.name
-          ruhoh.resources.load_previewer(h.name).call
-        else
-          collection = ruhoh.resources.load_collection h.name
-          try_files = for data in collection.paths().slice().reverse()
-            FS.join data.path, collection.namespace()
       app:
         if ruhoh.resources.has_previewer h.name
           ruhoh.resources.load_previewer(h.name).call
@@ -42,18 +54,9 @@ preview = (opts={}) ->
           try_files = for data in collection.paths().slice().reverse()
             do ->
               path = FS.join data.path, collection.namespace()
-              Apps.Tap(
-                Apps.FileTree(path),
-                (request) -> # ensure that path exists, Apps.FileTree fails if it doesn't
-                  FS.canonical(path).then(
-                    -> null,
-                    -> Apps.notFound(request)
-                  )
-              )
+              FileTree(path)
 
           FirstFound try_files
-
-    console.log mappings
 
     pagesPreviewer = new PagesPreviewer ruhoh
 
@@ -62,9 +65,6 @@ preview = (opts={}) ->
         for mapping in mappings
           if mapping.url is request.pathInfo.slice(0, mapping.url.length) # starts with
             request.pathInfo = request.pathInfo.slice mapping.url.length
-            console.log request.pathInfo
-            console.log "match: #{JSON.stringify mapping}"
-            console.log mapping.app
             return mapping.app
 
         # The generic Page::Previewer is used to render any/all page-like resources,
