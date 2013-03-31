@@ -29,9 +29,9 @@ class Client
 
     cmd = if @args[0] == 'new' then 'blog' else (@args[0] || 'help')
 
-    @ruhoh.setup_all().then( =>
+    return @[cmd]() if @[cmd]?
 
-      return @[cmd]() if @[cmd]?
+    @ruhoh.setup_all().then( =>
 
       unless @ruhoh.resources[cmd]?
         friend.say -> @red "Resource #{cmd} not found"
@@ -60,34 +60,37 @@ class Client
 
   # Show Client Utility help documentation.
   help: ->
-    options = @opt_parser.helpInformation()
-    resources = [{"methods": Help}]
-    resources.concat _.compact(for name in @ruhoh.resources.all()
-      continue unless @ruhoh.resources.has_client(name)
-      continue unless @ruhoh.resources.client(name).Help
-      {
-        "name": name,
-        "methods": @ruhoh.resources.client(name).Help
-      }
-    )
-    
-    friend.say ->
-      @plain ''
-      @plain "  Ruhoh is a nifty, modular static blog generator."
-      @plain "  It is the Universal Static Blog API."
-      @plain "  Visit http://www.ruhoh.com for complete usage and documentation."
-      @plain ''
-      @plain options
-      @plain '  Commands:'
-      @plain ''
-      for resource in resources
-        for method in resource["methods"]
-          if resource["name"]
-            @green("    " + "#{resource['name']} #{method['command']}")
-          else
-            @green("    " + method['command'])
-          @plain("      " + method['desc'])
-      @plain ''
+    # FIXME: help shouldn't need a full setup, but currently things are initialized in
+    # a non optimal way.
+    @ruhoh.setup_all().done =>
+      options = @opt_parser.helpInformation()
+      resources = [{"methods": Help}]
+      resources.concat _.compact(for name in @ruhoh.resources.all()
+        continue unless @ruhoh.resources.has_client(name)
+        continue unless @ruhoh.resources.client(name).Help
+        {
+          "name": name,
+          "methods": @ruhoh.resources.client(name).Help
+        }
+      )
+      
+      friend.say ->
+        @plain ''
+        @plain "  Ruhoh is a nifty, modular static blog generator."
+        @plain "  It is the Universal Static Blog API."
+        @plain "  Visit http://www.ruhoh.com for complete usage and documentation."
+        @plain ''
+        @plain options
+        @plain '  Commands:'
+        @plain ''
+        for resource in resources
+          for method in resource["methods"]
+            if resource["name"]
+              @green("    " + "#{resource['name']} #{method['command']}")
+            else
+              @green("    " + method['command'])
+            @plain("      " + method['desc'])
+        @plain ''
 
   # Public: Preview your website.
   preview: ->
