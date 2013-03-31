@@ -1,5 +1,14 @@
-require 'colors'
 {puts} = require 'util'
+
+codes =
+  bold: 1
+  red: 31
+  green: 32
+  yellow: 33
+  blue: 34
+  magenta: 35
+  cyan: 36
+  white: 37
 
 # The Friend is good for conversation.
 # He tells you what's going on.
@@ -27,29 +36,10 @@ friend =
   plain: (text) ->
     puts text
   
-  bold: (text) ->
-    @color(text, "\x1B[1m")
-
-  red: (text) ->
-    @color(text, "\x1B[31m")
-
-  green: (text) ->
-    @color(text, "\x1B[32m")
-
-  yellow: (text) ->
-    @color(text, "\x1B[33m")
-
-  blue: (text) ->
-    @color(text, "\x1B[34m")
-
-  magenta: (text) ->
-    @color(text, "\x1B[35m")
-
-  cyan: (text) ->
-    @color(text, "\x1B[36m")
-
-  white: (text) ->
-    @color(text, "\x1B[37m")
+for name, code of codes
+  do (code) ->
+    friend[name] = (text) ->
+      @color(text, "\x1B[#{code}m")
 
 
 module.exports = friend
