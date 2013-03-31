@@ -1,0 +1,22 @@
+#!/usr/bin/env node
+
+var puts = require('util').puts,
+    program = require('commander'),
+    cs = require('coffee-script'),
+    version = require('../lib/ruhoh/version'),
+    Client = require('../lib/ruhoh/client');
+
+program
+  .version("ruhoh " + version.VERSION + "\nRuhohSpec " + version.RuhohSpec)
+  .option("--hg", "Use mercurial (hg) instead of git for source control.")
+  .option("-v, --verbose", "Run verbosely. For pages, shows extra title, url meta-data.")
+  .on("--help", function() {
+    puts('  Use `ruhoh help` for full command list.\n');
+  })
+  .parse(process.argv);
+
+new Client({
+  args: program.args,
+  options: program,
+  opt_parser: program
+});

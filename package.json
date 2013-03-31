@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "Ruhoh universal static blog api in javascript",
   "main": "index.js",
+  "bin": "./bin/ruhoh",
   "scripts": {
     "test": "mocha --recursive --compilers coffee:coffee-script spec"
   },
@@ -23,7 +24,8 @@
     "coffee-script": "~1.4.0",
     "moment": "~2.0.0",
     "mustache": "git://github.com/danielfagerstrom/mustache.js.git#deferred",
-    "marked": "~0.2.8"
+    "marked": "~0.2.8",
+    "commander": "~1.1.1"
   },
   "devDependencies": {
     "mocha": "~1.8.1",
