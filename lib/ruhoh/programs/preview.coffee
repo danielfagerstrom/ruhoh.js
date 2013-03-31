@@ -5,16 +5,6 @@ Apps = require 'q-io/http-apps'
 Ruhoh = require '../../ruhoh'
 PagesPreviewer = require '../base/pages/previewer'
 
-# FS.open's default behavior is to encode to UTF-8 which destroys images :/
-FS._open = FS.open
-FS.open = (path, flags, charset, options) ->
-  if typeof flags == "object"
-    options = flags
-    flags = options.flags
-    charset = options.charset
-  flags ?= "rb" # set binary mode
-  FS._open path, flags, charset, options
-
 # Apps.FileTree fails instead of returning 404 when the root doesn't exist
 FileTree = (root, options) ->
   fileTree = null
