@@ -2,7 +2,6 @@ _ = require 'underscore'
 {puts} = require 'util'
 Ruhoh = require '../ruhoh'
 friend = require './friend'
-console_methods = require './console_methods'
 
 class Client
   DefaultBlogScaffold = 'git://github.com/ruhoh/blog.git'
@@ -15,6 +14,10 @@ class Client
     #   "command": "compile",
     #   "desc": "Compile to static website."
     # },
+    {
+      "command": "preview [port]",
+      "desc": "Preview your website at http://localhost:9292/."
+    },
     {
       "command": "help",
       "desc": "Show this menu."
@@ -46,6 +49,7 @@ class Client
     ).done()
 
   console: ->
+    console_methods = require './console_methods'
     console_methods.env = @args[1]
     _.extend root, console_methods # make console_methods available as globals
     root.init().then =>
@@ -84,7 +88,22 @@ class Client
             @green("    " + method['command'])
           @plain("      " + method['desc'])
       @plain ''
-  
+
+  # Public: Preview your website.
+  preview: ->
+    HTTP = require 'q-io/http'
+    Apps = require 'q-io/http-apps'
+    {preview} = require './programs/preview'
+
+    port = @args[1] or 9292
+
+    preview().then( (app) ->
+      HTTP.Server(Apps.Log(app))
+      .listen(port)
+    ).done()
+
+    puts "Server running at port: #{port}"
+
   ###
   # Public: Compile to static website.
   compile: ->

@@ -1,5 +1,4 @@
 FS = require 'q-io/fs'
-HTTP = require 'q-io/http'
 Apps = require 'q-io/http-apps'
 {FirstFound} = require 'q-io/http-apps/route'
 Ruhoh = require '../../ruhoh'
@@ -64,14 +63,3 @@ preview = (opts={}) ->
     , true)
 
 module.exports.preview = preview
-    
-if require.main is module
-  port = process.argv[2] or 7070
-  opts = source: '../pkg/ruhoh.com/' # FIXME: just during development
-
-  preview(opts).then( (app) ->
-    HTTP.Server(Apps.Log(app))
-    .listen(port)
-  ).done()
-
-  console.log "Server running at port: #{port}"
