@@ -53,7 +53,7 @@ class DB
       if id
         name = name_or_pointer['resource'].toLowerCase()
         if @ruhoh.env == "production" && @["_#{name}"]
-          Q.resolve @["_#{name}"][id]
+          @["_#{name}"].then (resource) -> resource[id]
         else
           resource = @ruhoh.resources.load_collection(name)
           resource.generate(id).then (values) =>
@@ -64,21 +64,18 @@ class DB
     else
       name = name_or_pointer.toLowerCase() # name is a stringified constant.
       if @ruhoh.env == "production" && @["_#{name}"]
-        Q.resolve @["_#{name}"]
+        @["_#{name}"]
       else
-        @ruhoh.resources.load_collection(name).generate().then (data) =>
-          @["_#{name}"] = data
-          data
+        @["_#{name}"] = @ruhoh.resources.load_collection(name).generate()
 
   # return a given resource's file content
   content: (pointer) ->
     name = pointer['resource'].toLowerCase() # name is a stringified constant.
     if @ruhoh.env == "production" && @_content["#{name}_#{pointer['id']}"]
-      Q.resolve @_content["#{name}_#{pointer['id']}"]
+      @_content["#{name}_#{pointer['id']}"]
     else
       model = new (@ruhoh.resources.model(name))(@ruhoh, pointer)
-      model.content().then (content) =>
-        @_content["#{name}_#{pointer['id']}"] = content
+      @_content["#{name}_#{pointer['id']}"] = model.content()
 
   urls: ->
     @_urls["base_path"] = @ruhoh.base_path()
@@ -106,7 +103,7 @@ class DB
   # Lazy-load all data endpoints but cache the result for this cycle.
   _data_for: (resource) ->
     if @["_#{resource}"]
-      Q.resolve @["_#{resource}"]
+      @["_#{resource}"]
     else
       @update(resource)
 
