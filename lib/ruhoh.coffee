@@ -2,6 +2,7 @@ path = require 'path'
 Q = require 'q'
 FS = require 'q-io/fs'
 glob = require 'glob'
+_ = require 'underscore'
 logger = require './ruhoh/logger'
 utils = require './ruhoh/utils'
 friend = require './ruhoh/friend'
@@ -134,29 +135,37 @@ class Ruhoh
   #    end
   #  end
 
-  # FIXME
   compile: ->
-    throw new Error 'not implemented'
     @ensure_paths()
     env = @env()
     friend.say -> @plain "Compiling for environment: '#{env}'"
-    FileUtils.rm_r @paths.compiled if File.exist?(@paths.compiled)
-    FileUtils.mkdir_p @paths.compiled
+
+    FS.exists(@paths.compiled).then( (exists) =>
+      FS.removeTree @paths.compiled if exists
+    ).then( =>
+      FS.makeTree @paths.compiled
+    ).then =>
     
-    # Run the resource compilers
-    for name of @resources.all
-      continue unless @resources.compiler?(name)
-      @resources.load_compiler(name).run()
-    
-    # Run extra compiler tasks if available:
-    if Ruhoh.const_defined?('Compiler')
-      for c in Ruhoh.Compiler.constants
-        compiler = Ruhoh.Compiler.const_get(c)
-        continue unless compiler.respond_to?('new')
-        task = new compiler(this)
-        continue unless task.respond_to?('run')
-        task.run()
-    true
+      # Hack to ensure assets are processed first so post-processing logic reflects in the templates.
+      compilers = ['javascripts', 'stylesheets']
+        .concat _.without(@resources.all(), 'javascripts', 'stylesheets')
+
+      # Run the resource compilers
+      for name of compilers
+        continue unless @resources.has_compiler(name)
+        @resources.load_compiler(name).run()
+      
+      # Run extra compiler tasks if available:
+      ### FIXME: implement
+      if Ruhoh.const_defined?('Compiler')
+        for c in Ruhoh.Compiler.constants
+          compiler = Ruhoh.Compiler.const_get(c)
+          continue unless compiler.respond_to?('new')
+          task = new compiler(this)
+          continue unless task.respond_to?('run')
+          task.run()
+      ###
+      true
   
   ensure_setup: ->
     return if @_config and @paths

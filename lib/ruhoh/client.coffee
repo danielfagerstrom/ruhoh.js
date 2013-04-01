@@ -10,10 +10,10 @@ class Client
     #   "command": "new <directory_path>",
     #   "desc": "Create a new blog directory based on the Ruhoh specification."
     # },
-    # {
-    #   "command": "compile",
-    #   "desc": "Compile to static website."
-    # },
+    {
+      "command": "compile",
+      "desc": "Compile to static website."
+    },
     {
       "command": "preview [port]",
       "desc": "Preview your website at http://localhost:9292/."
@@ -107,12 +107,15 @@ class Client
 
     puts "Server running at port: #{port}"
 
-  ###
   # Public: Compile to static website.
   compile: ->
-    puts Benchmark.measure ->
-      Ruhoh::Program.compile(@args[1])
+    {compile} = require './programs/compile'
+    time = process.hrtime()
+    compile(@args[1]).done ->
+      diff = process.hrtime(time)
+      puts "#{diff[0]}.#{1e9*diff[1]}"
   
+  ###
   # Public: Create a new blog at the directory provided.
   blog: ->
     name = @args[1]
