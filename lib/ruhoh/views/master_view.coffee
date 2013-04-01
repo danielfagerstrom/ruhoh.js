@@ -90,10 +90,11 @@ class MasterView # extends RMustache
   #
   # Returns: [String] The relative path to the compiled file for this page.
   compiled_path: ->
-    path = decodeURIComponent(@page_data['url']).replace(/^\//g, '') #strip leading slash.
-    path = "index.html" if path is ""
-    path += '/index.html' unless path.match /\.\w+$/
-    path
+    Q.when @page_data, (page_data) ->
+      path = decodeURIComponent(page_data['url']).replace(/^\//g, '') #strip leading slash.
+      path = "index.html" if path is ""
+      path += '/index.html' unless path.match /\.\w+$/
+      path
 
 
   # protected
