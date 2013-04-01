@@ -5,7 +5,6 @@ module.exports =
     return @ruhoh if @ruhoh
 
     @ruhoh = new Ruhoh()
-    @ruhoh.env ||= 'development'
     @ruhoh.setup_all(opts).then =>
       @ruhoh
 

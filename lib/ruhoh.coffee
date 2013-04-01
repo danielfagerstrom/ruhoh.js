@@ -20,6 +20,7 @@ class Ruhoh
   constructor: ->
     @resources = new ResourcesInterface(this)
     @db = new DB(this)
+    @env = 'development'
 
   master_view: (pointer) ->
     new MasterView(this, pointer)
@@ -90,11 +91,8 @@ class Ruhoh
       @setup_db()
       @setup_plugins() if opts.enable_plugins
 
-  env: ->
-    @_env || 'development'
-  
   base_path: ->
-    if @env() == 'production'
+    if @env == 'production'
       @config()['base_path']
     else
       '/'
@@ -137,23 +135,26 @@ class Ruhoh
 
   compile: ->
     @ensure_paths()
-    env = @env()
+    env = @env
     friend.say -> @plain "Compiling for environment: '#{env}'"
 
     FS.exists(@paths.compiled).then( (exists) =>
       FS.removeTree @paths.compiled if exists
     ).then( =>
       FS.makeTree @paths.compiled
-    ).then =>
+    ).then( =>
     
       # Hack to ensure assets are processed first so post-processing logic reflects in the templates.
       compilers = ['javascripts', 'stylesheets']
         .concat _.without(@resources.all(), 'javascripts', 'stylesheets')
 
       # Run the resource compilers
-      for name of compilers
-        continue unless @resources.has_compiler(name)
-        @resources.load_compiler(name).run()
+      Q.all(
+        for name in compilers when @resources.has_compiler(name)
+          @resources.load_compiler(name).run()
+      )
+      
+    ).then =>
       
       # Run extra compiler tasks if available:
       ### FIXME: implement

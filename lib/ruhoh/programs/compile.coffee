@@ -7,7 +7,7 @@ Ruhoh = require '../../ruhoh'
 # to properly omit drafts and other development-only settings.
 exports.compile = (target) ->
   ruhoh = new Ruhoh()
-  ruhoh._env = 'production' #FIXME: shouldn't det private member
+  ruhoh.env = 'production'
   ruhoh.setup_all().then ->
 
     target = if target

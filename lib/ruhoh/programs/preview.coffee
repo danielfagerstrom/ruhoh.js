@@ -18,7 +18,7 @@ preview = (opts={}) ->
   opts.env ||= 'development'
   
   ruhoh = new Ruhoh()
-  ruhoh._env = opts.env # FIXME ruhoh env needs to be writable
+  ruhoh.env = opts.env
   ruhoh.setup_all(opts).then( ->
     # initialize the routes dictionary for all page resources.
     ruhoh.db.routes_initialize()
