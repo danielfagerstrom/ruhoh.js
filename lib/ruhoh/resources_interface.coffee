@@ -4,6 +4,7 @@ _ = require 'underscore'
 base = require './base'
 resources = require './resources'
 friend = require './friend'
+utils = require './utils'
 
 Whitelist = [
   'collection'
@@ -52,7 +53,7 @@ class ResourcesInterface
     r = _.difference @registered(), ["pages", "posts"] # registered non-pages
 
     for resource, config of @ruhoh.config()
-      continue if resource == "theme"
+      continue if resource in ["theme", "compiled"]
       continue if (config && config["use"] && config["use"] != "pages")
       continue if resource in r
       continue unless resource in @discover()
@@ -118,8 +119,7 @@ class ResourcesInterface
     @constructor._camelize name
 
   @_camelize: (name) ->
-    capitalize = (name) -> name[0].toUpperCase() + name[1..].toLowerCase()
-    (capitalize a for a in name.split '_').join('')
+    utils.camelize name
 
 
 for method_name in Whitelist

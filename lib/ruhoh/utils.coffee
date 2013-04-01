@@ -94,3 +94,9 @@ module.exports =
 
   compare: (a, b) ->
     if a < b then -1 else if a > b then 1 else 0
+
+  capitalize: (name) ->
+    name[0].toUpperCase() + name[1..].toLowerCase()
+
+  camelize: (name) ->
+    (@capitalize a for a in name.split '_').join('')
