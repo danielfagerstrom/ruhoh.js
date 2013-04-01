@@ -43,7 +43,7 @@ class ResourcesInterface
     Q.nfcall(glob, '*', cwd: @ruhoh.base, mark: true).then (files) =>
       dirRE = /\/$/
       @_discover =
-        (file.replace(dirRE, '') for file in files when file.match(dirRE) and not (file in ["plugins"]))
+        (file.replace(dirRE, '') for file in files when file.match(dirRE) and not (file in ["plugins/", "themes/"]))
       
   discover: ->
     @ensure_setup()
@@ -60,7 +60,7 @@ class ResourcesInterface
       resource
 
   non_pages: ->
-    _.difference @all(), @acting_as_pages(), ["theme"]
+    _.difference @all(), @acting_as_pages(), ["theme", "compiled"]
 
   exists: (name) ->
     name in @all()
