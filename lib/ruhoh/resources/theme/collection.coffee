@@ -1,4 +1,5 @@
 Q = require 'q'
+FS = require 'q-io/fs'
 BaseCollection = require '../../base/collection'
 
 class Collection extends BaseCollection
@@ -9,6 +10,9 @@ class Collection extends BaseCollection
 
   namespace: ->
     @config()['name']
+
+  hasPaths: ->
+    FS.isDirectory @ruhoh.paths.theme
 
   # noop
   generate: ->
